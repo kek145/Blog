@@ -6,4 +6,11 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Entity\Connection\" />
+      <Folder Include="Entity\Table\" />
+      <Folder Include="Enum\" />
+      <Folder Include="Response\" />
+    </ItemGroup>
+
 </Project>
