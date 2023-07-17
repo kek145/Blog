@@ -1,6 +1,5 @@
 ﻿using System;
 using BlogAPI.BL.DTOs;
-using BlogAPI.BL.Validators;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.DAL.RoleRepository;
