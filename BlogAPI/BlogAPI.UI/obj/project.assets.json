@@ -1230,6 +1230,11 @@
       "BlogAPI.BL/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "BlogAPI.DAL": "1.0.0",
+          "BlogAPI.Domain": "1.0.0",
+          "BlogAPI.Security": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/BlogAPI.BL.dll": {}
         },
@@ -1260,6 +1265,16 @@
         },
         "runtime": {
           "bin/placeholder/BlogAPI.Domain.dll": {}
+        }
+      },
+      "BlogAPI.Security/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/BlogAPI.Security.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BlogAPI.Security.dll": {}
         }
       }
     }
@@ -3921,6 +3936,11 @@
       "type": "project",
       "path": "../BlogAPI.Domain/BlogAPI.Domain.csproj",
       "msbuildProject": "../BlogAPI.Domain/BlogAPI.Domain.csproj"
+    },
+    "BlogAPI.Security/1.0.0": {
+      "type": "project",
+      "path": "../BlogAPI.Security/BlogAPI.Security.csproj",
+      "msbuildProject": "../BlogAPI.Security/BlogAPI.Security.csproj"
     }
   },
   "projectFileDependencyGroups": {

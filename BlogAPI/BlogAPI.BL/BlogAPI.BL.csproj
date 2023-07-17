@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BlogAPI.DAL\BlogAPI.DAL.csproj" />
+      <ProjectReference Include="..\BlogAPI.Domain\BlogAPI.Domain.csproj" />
+      <ProjectReference Include="..\BlogAPI.Security\BlogAPI.Security.csproj" />
+    </ItemGroup>
+
 </Project>
