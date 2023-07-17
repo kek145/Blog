@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Net;
 using BlogAPI.BL.DTOs;
+using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;
 using BlogAPI.Domain.Entity.Table;
-using BlogAPI.DAL.UserRoleRepository;
-using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.Domain.Enum;
-using BlogAPI.Security.HashDataHelper;
 using Microsoft.Extensions.Logging;
+using BlogAPI.DAL.UserRoleRepository;
+using BlogAPI.Security.HashDataHelper;
+using BlogAPI.Domain.Entity.Connection;
 
 namespace BlogAPI.BL.RegistrationService;
 
 public class RegistrationService : IRegistrationService
 {
+    private BaseResponse<UserEntity> _response;
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly ILogger<RegistrationService> _logger;
@@ -36,16 +36,24 @@ public class RegistrationService : IRegistrationService
             var user = await _userRepository.FindUserByEmailAsync(registrationDto.Email);
             var role = await _roleRepository.GetRoleByNameAsync(registrationDto.RoleName);
 
-            if (user != null! || role == null!)
+            if (user != null!)
             {
                 _logger.LogError("User with this email is already registered!");
-                return new BaseResponse<UserEntity>
-                {
-                    Description = "User with this email is already registered!",
-                    StatusCode = StatusCode.BadRequest
-                };
+                return new BaseResponse<UserEntity>().BadRequestResponse("User with this email is already registered!");
             }
-            
+
+            if (role == null!)
+            {
+                _logger.LogError("This type of account cannot be created!");
+                return new BaseResponse<UserEntity>().BadRequestResponse("This type of account cannot be created!");
+            }
+
+            if (registrationDto.Password != registrationDto.ConfirmPassword)
+            {
+                _logger.LogError("Password mismatch!");
+                return new BaseResponse<UserEntity>().BadRequestResponse("Password mismatch!");
+            }
+
             PasswordHasher.CreatePasswordHash(registrationDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
             var userEntity = new UserEntity
             {
@@ -65,21 +73,13 @@ public class RegistrationService : IRegistrationService
             await _userRepository.AddNewUserAsync(userEntity);
             await _userRoleRepository.AddNewUserRoleAsync(userRoleEntity);
             
-            _logger.LogInformation("Registration completed successfully");
-            return new BaseResponse<UserEntity>
-            {
-                Description = "Registration completed successfully",
-                StatusCode = StatusCode.Ok,
-            };
+            _logger.LogInformation("Registration completed successfully!");
+            return new BaseResponse<UserEntity>().SuccessRequest("Registration completed successfully!");
         }
         catch (Exception)
         {
-            _logger.LogError("Some problems with the repositories or the service itself");
-            return new BaseResponse<UserEntity>
-            {
-                Description = "Internal server error",
-                StatusCode = StatusCode.InternalServerError
-            };
+            _logger.LogError("Some problems with the repositories or the service itself!");
+            return new BaseResponse<UserEntity>().InternalServerErrorResponse("Some problems with the repositories or the service itself!");
         }
     }
 }
