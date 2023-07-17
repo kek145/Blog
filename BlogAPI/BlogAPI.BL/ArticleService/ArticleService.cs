@@ -39,59 +39,55 @@ public class ArticleService : IArticleService
 
     public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleDtoCreate articleDto, string token)
     {
-        int? userId = _jwtTokenService.GetUserIdFromToken(token);
-        var article = await _articleRepository.FindArticleByTitleAsync(articleDto.Title);
+        var userId = _jwtTokenService.GetUserIdFromToken(token);
         var category = await _categoryRepository.FindCategoryByNameAsync(articleDto.CategoryName);
-        var userArticle = await _userArticleRepository.FindUserArticleByIdAsync(userId!.Value, article.ArticleId);
+        var title = await _articleRepository.FindArticleByTitleAsync(articleDto.Title);
         try
         {
-            if (category == null!)
+            if (userId.HasValue)
             {
-                _logger.LogError("This category does not exist");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("This category does not exist.");
+                if (category == null!)
+                {
+                    _logger.LogError("This category does not exist");
+                    return new BaseResponse<ArticleEntity>().BadRequestResponse("This category does not exist.");
+                }
+
+                if (title != null!)
+                {
+                    _logger.LogError("There is already an article with the same title");
+                    return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
+                }
+
+                var article = new ArticleEntity
+                {
+                    Title = articleDto.Title,
+                    Content = articleDto.Content,
+                    CreatedAt = articleDto.CreatedAt
+                };
+
+                var userArticle = new UserArticleEntity
+                {
+                    UserId = userId.Value,
+                    Article = article,
+                };
+
+                var articleCategory = new ArticleCategoryEntity
+                {
+                    Article = article,
+                    Category = category
+                };
+
+                await _articleRepository.CreateArticleAsync(article);
+                await _userArticleRepository.CreateUserArticleAsync(userArticle);
+                await _articleCategoryRepository.CreateArticleCategoryAsync(articleCategory);
             }
 
-            if (article != null!)
-            {
-                _logger.LogError("There is already an article with the same title");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
-            }
-
-            if (userArticle == null!)
-            {
-                _logger.LogError("An error occurred while creating the article");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("An error occurred while creating the article");
-            }
-
-            var articleCategory = new ArticleCategoryEntity
-            {
-                Article = article,
-                Category = category
-            };
-
-            var userArticleEntity = new UserArticleEntity
-            {
-                UserId = userId.Value,
-                Article = article!
-            };
-
-            var articleEntity = new ArticleEntity
-            {
-                Title = articleDto.Title,
-                Content = articleDto.Content,
-                CreatedAt = articleDto.CreatedAt
-            };
-
-            await _articleCategoryRepository.CreateArticleCategoryAsync(articleCategory);
-            await _userArticleRepository.CreateUserArticleAsync(userArticleEntity);
-            await _articleRepository.CreateArticleAsync(articleEntity);
-            
             _logger.LogInformation("The article has been successfully created!");
             return new BaseResponse<ArticleEntity>().SuccessRequest("The article has been successfully created!");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
+            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse($"Internal server error: {ex.Message}");
         }
     }
 }
