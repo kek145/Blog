@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 using BlogAPI.BL.AuthenticationService;
 using BlogAPI.DAL.ArticleRepository;
+using BlogAPI.DAL.UserArticleRepository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserArticleRepository, UserArticleRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
