@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BlogAPI.BL\BlogAPI.BL.csproj" />
       <ProjectReference Include="..\BlogAPI.DAL\BlogAPI.DAL.csproj" />
     </ItemGroup>
 

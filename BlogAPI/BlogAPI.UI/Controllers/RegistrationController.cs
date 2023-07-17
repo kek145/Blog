@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using BlogAPI.BL.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.UI.Controllers;
@@ -14,7 +15,7 @@ public class RegistrationController : ControllerBase
 
     [HttpPost]
     [Route("Register")]
-    public async Task<IActionResult> RegistrationAccount()
+    public async Task<IActionResult> RegistrationAccount([FromBody] RegistrationDto request)
     {
         return Ok();
     }

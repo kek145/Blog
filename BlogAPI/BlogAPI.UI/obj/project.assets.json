@@ -1227,6 +1227,16 @@
           }
         }
       },
+      "BlogAPI.BL/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/BlogAPI.BL.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BlogAPI.BL.dll": {}
+        }
+      },
       "BlogAPI.DAL/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
@@ -3897,6 +3907,11 @@
         "version.txt"
       ]
     },
+    "BlogAPI.BL/1.0.0": {
+      "type": "project",
+      "path": "../BlogAPI.BL/BlogAPI.BL.csproj",
+      "msbuildProject": "../BlogAPI.BL/BlogAPI.BL.csproj"
+    },
     "BlogAPI.DAL/1.0.0": {
       "type": "project",
       "path": "../BlogAPI.DAL/BlogAPI.DAL.csproj",
@@ -3910,6 +3925,7 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "BlogAPI.BL >= 1.0.0",
       "BlogAPI.DAL >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 7.0.8",
       "Microsoft.EntityFrameworkCore >= 7.0.9",
@@ -3943,6 +3959,9 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
+            "D:\\GitHub\\Blog\\BlogAPI\\BlogAPI.BL\\BlogAPI.BL.csproj": {
+              "projectPath": "D:\\GitHub\\Blog\\BlogAPI\\BlogAPI.BL\\BlogAPI.BL.csproj"
+            },
             "D:\\GitHub\\Blog\\BlogAPI\\BlogAPI.DAL\\BlogAPI.DAL.csproj": {
               "projectPath": "D:\\GitHub\\Blog\\BlogAPI\\BlogAPI.DAL\\BlogAPI.DAL.csproj"
             }

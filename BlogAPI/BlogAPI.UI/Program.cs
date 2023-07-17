@@ -1,4 +1,5 @@
 using BlogAPI.DAL.Core;
+using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
