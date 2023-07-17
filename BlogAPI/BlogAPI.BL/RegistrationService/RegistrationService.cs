@@ -1,8 +1,7 @@
 ﻿using System;
 using BlogAPI.BL.DTOs;
-using BlogAPI.Domain.Enum;
-using System.Threading.Tasks;
 using BlogAPI.BL.Validators;
+using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;
@@ -16,13 +15,12 @@ namespace BlogAPI.BL.RegistrationService;
 
 public class RegistrationService : IRegistrationService
 {
-    private BaseResponse<UserEntity> _response;
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly ILogger<RegistrationService> _logger;
     private readonly IUserRoleRepository _userRoleRepository;
 
-    public RegistrationService(IUserRepository userRepository, IRoleRepository roleRepository, IUserRoleRepository userRoleRepository, ILogger<RegistrationService> logger)
+    public RegistrationService(IUserRepository userRepository, IRoleRepository roleRepository, ILogger<RegistrationService> logger, IUserRoleRepository userRoleRepository)
     {
         _logger = logger;
         _userRepository = userRepository;
