@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using BlogAPI.BL.ArticleService;
 using BlogAPI.DAL.Core;
 using Microsoft.OpenApi.Models;
 using BlogAPI.BL.JwtTokenService;
@@ -45,6 +46,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();

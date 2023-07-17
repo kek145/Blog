@@ -9,6 +9,8 @@ public class ArticleDtoCreate
     public string Title { get; set; } = string.Empty;
     [Required, MinLength(50)]
     public string Content { get; set; } = string.Empty;
+    [Required, MinLength(4)]
+    public string CategoryName { get; set; } = string.Empty;
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
