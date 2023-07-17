@@ -7,5 +7,5 @@ public interface IUserArticleRepository
 {
     Task CreateUserArticleAsync(UserArticleEntity entity);
     Task DeleteUserArticleAsync(UserArticleEntity entity);
-    Task<UserArticleEntity> FindUserArticleById(int userId, int articleId);
+    Task<UserArticleEntity> FindUserArticleByIdAsync(int userId, int articleId);
 }

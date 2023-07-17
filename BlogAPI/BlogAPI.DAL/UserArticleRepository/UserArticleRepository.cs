@@ -27,7 +27,7 @@ public class UserArticleRepository : IUserArticleRepository
         await _context.SaveChangesAsync();
     }
     
-    public async Task<UserArticleEntity> FindUserArticleById(int userId, int articleId)
+    public async Task<UserArticleEntity> FindUserArticleByIdAsync(int userId, int articleId)
     {
         var userArticle = await _context.UserArticle.Where(find => find.UserId == userId && find.ArticleId == articleId).FirstOrDefaultAsync();
         return userArticle!;
