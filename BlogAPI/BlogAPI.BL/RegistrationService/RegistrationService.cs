@@ -2,6 +2,7 @@
 using BlogAPI.BL.DTOs;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
+using BlogAPI.BL.Validators;
 using BlogAPI.Domain.Response;
 using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;
@@ -52,6 +53,14 @@ public class RegistrationService : IRegistrationService
             {
                 _logger.LogError("Password mismatch!");
                 return new BaseResponse<UserEntity>().BadRequestResponse("Password mismatch!");
+            }
+
+            if (!BaseValidator<RegistrationDto>.CheckWhitespace(registrationDto) || 
+                !BaseValidator<RegistrationDto>.CheckWhitespace(registrationDto) || 
+                !BaseValidator<RegistrationDto>.ValidateFieldsNotEmpty(registrationDto))
+            {
+                _logger.LogError("Validation error!");
+                return new BaseResponse<UserEntity>().BadRequestResponse("Validation error!");
             }
 
             PasswordHasher.CreatePasswordHash(registrationDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
