@@ -53,14 +53,6 @@ public class RegistrationService : IRegistrationService
                 return new BaseResponse<UserEntity>().BadRequestResponse("Password mismatch!");
             }
 
-            if (!BaseValidator<RegistrationDto>.CheckWhitespace(registrationDto) || 
-                !BaseValidator<RegistrationDto>.CheckWhitespace(registrationDto) || 
-                !BaseValidator<RegistrationDto>.ValidateFieldsNotEmpty(registrationDto))
-            {
-                _logger.LogError("Validation error!");
-                return new BaseResponse<UserEntity>().BadRequestResponse("Validation error!");
-            }
-
             PasswordHasher.CreatePasswordHash(registrationDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
             var userEntity = new UserEntity
             {
