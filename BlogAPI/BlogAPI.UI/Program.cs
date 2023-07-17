@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using BlogAPI.BL.AuthenticationService;
 using BlogAPI.DAL.Core;
 using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;
@@ -41,6 +42,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

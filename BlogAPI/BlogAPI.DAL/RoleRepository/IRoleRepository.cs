@@ -5,6 +5,7 @@ namespace BlogAPI.DAL.RoleRepository;
 
 public interface IRoleRepository
 {
-    Task<RoleEntity> GetRoleByIdAsync(int roleId);
-    Task<RoleEntity> GetRoleByNameAsync(string roleName);
+    Task<RoleEntity> FindRoleByIdAsync(int roleId);
+    Task<string> FindRolesByUserIdAsync(int userId);
+    Task<RoleEntity> FindRoleByNameAsync(string roleName);
 }

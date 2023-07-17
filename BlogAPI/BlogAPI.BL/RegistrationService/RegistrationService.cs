@@ -33,7 +33,7 @@ public class RegistrationService : IRegistrationService
         try
         {
             var user = await _userRepository.FindUserByEmailAsync(registrationDto.Email);
-            var role = await _roleRepository.GetRoleByNameAsync(registrationDto.RoleName);
+            var role = await _roleRepository.FindRoleByNameAsync(registrationDto.RoleName);
 
             if (user != null!)
             {

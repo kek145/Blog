@@ -14,13 +14,23 @@ public class RoleRepository : IRoleRepository
     {
         _context = context;
     }
-    public async Task<RoleEntity> GetRoleByIdAsync(int roleId)
+    public async Task<RoleEntity> FindRoleByIdAsync(int roleId)
     {
         var role = await _context.Role.FindAsync(roleId);
         return role;
     }
 
-    public async Task<RoleEntity> GetRoleByNameAsync(string roleName)
+    public async Task<string> FindRolesByUserIdAsync(int userId)
+    {
+        var userRole = await _context.UserRole
+            .Where(ur => ur.UserId == userId)
+            .Join(_context.Role, ur => ur.RoleId, r => r.RoleId, (ur, r) => r.RoleName)
+            .FirstOrDefaultAsync();
+
+        return userRole!;
+    }
+
+    public async Task<RoleEntity> FindRoleByNameAsync(string roleName)
     {
         var role = await _context.Role.Where(find => find.RoleName == roleName).FirstOrDefaultAsync();
         return role;
