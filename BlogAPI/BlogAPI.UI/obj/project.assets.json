@@ -1231,6 +1231,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+          "BlogAPI.Domain": "1.0.0",
           "Microsoft.EntityFrameworkCore": "7.0.9",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.9"
         },
@@ -1239,6 +1240,16 @@
         },
         "runtime": {
           "bin/placeholder/BlogAPI.DAL.dll": {}
+        }
+      },
+      "BlogAPI.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/BlogAPI.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BlogAPI.Domain.dll": {}
         }
       }
     }
@@ -3890,6 +3901,11 @@
       "type": "project",
       "path": "../BlogAPI.DAL/BlogAPI.DAL.csproj",
       "msbuildProject": "../BlogAPI.DAL/BlogAPI.DAL.csproj"
+    },
+    "BlogAPI.Domain/1.0.0": {
+      "type": "project",
+      "path": "../BlogAPI.Domain/BlogAPI.Domain.csproj",
+      "msbuildProject": "../BlogAPI.Domain/BlogAPI.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {

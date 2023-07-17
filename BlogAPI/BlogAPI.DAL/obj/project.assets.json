@@ -1132,6 +1132,16 @@
             "rid": "win"
           }
         }
+      },
+      "BlogAPI.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/BlogAPI.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BlogAPI.Domain.dll": {}
+        }
       }
     }
   },
@@ -3452,10 +3462,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "BlogAPI.Domain/1.0.0": {
+      "type": "project",
+      "path": "../BlogAPI.Domain/BlogAPI.Domain.csproj",
+      "msbuildProject": "../BlogAPI.Domain/BlogAPI.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "BlogAPI.Domain >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 7.0.9",
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.9",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.9"
@@ -3485,7 +3501,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\GitHub\\Blog\\BlogAPI\\BlogAPI.Domain\\BlogAPI.Domain.csproj": {
+              "projectPath": "D:\\GitHub\\Blog\\BlogAPI\\BlogAPI.Domain\\BlogAPI.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
