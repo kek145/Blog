@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Threading.Tasks;
+using BlogAPI.BL.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +14,13 @@ public class ArticleController : ControllerBase
     public ArticleController()
     {
         
+    }
+
+    [HttpPost]
+    [Route("CreateArticle")]
+    public async Task<IActionResult> CreateNewTask([FromBody] ArticleDtoCreate request)
+    {
+        return Ok();
     }
 
     [HttpGet]

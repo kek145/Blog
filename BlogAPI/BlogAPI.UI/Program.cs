@@ -1,8 +1,8 @@
 using System;
 using System.Text;
-using BlogAPI.BL.AuthenticationService;
-using BlogAPI.BL.JwtTokenService;
 using BlogAPI.DAL.Core;
+using Microsoft.OpenApi.Models;
+using BlogAPI.BL.JwtTokenService;
 using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;
 using Microsoft.AspNetCore.Builder;
@@ -10,12 +10,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.DAL.UserRoleRepository;
 using BlogAPI.BL.RegistrationService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Filters;
+using BlogAPI.BL.AuthenticationService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,7 +60,6 @@ builder.Services.AddSwaggerGen(options =>
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
-
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 

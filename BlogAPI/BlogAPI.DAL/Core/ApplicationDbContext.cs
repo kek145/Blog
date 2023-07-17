@@ -32,7 +32,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserArticleEntity>().ToTable("UsersArticles");
         modelBuilder.Entity<UserCommentEntity>().ToTable("UsersComments");
         modelBuilder.Entity<ArticleCommentEntity>().ToTable("ArticlesComments");
-        modelBuilder.Entity<ArticleCategoryEntity>().ToTable("ArticleCategories");
+        modelBuilder.Entity<ArticleCategoryEntity>().ToTable("ArticlesCategories");
 
         modelBuilder.Entity<UserEntity>().HasKey(user => user.UserId);
         modelBuilder.Entity<RoleEntity>().HasKey(role => role.RoleId);
@@ -79,6 +79,12 @@ public class ApplicationDbContext : DbContext
             new RoleEntity { RoleId = 1, RoleName = "Administrator" },
             new RoleEntity { RoleId = 2, RoleName = "Author" },
             new RoleEntity { RoleId = 3, RoleName = "User" }
+        );
+
+        modelBuilder.Entity<CategoryEntity>().HasData(
+            new CategoryEntity { CategoryId = 1, CategoryName = "News" },
+            new CategoryEntity { CategoryId = 2, CategoryName = "Sport" },
+            new CategoryEntity { CategoryId = 3, CategoryName = "Games" }
         );
         
         modelBuilder.Entity<UserRoleEntity>()
