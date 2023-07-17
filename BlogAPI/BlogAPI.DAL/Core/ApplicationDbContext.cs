@@ -47,14 +47,14 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<UserRoleEntity>()
             .HasKey(ur => new { ur.UserId, ur.RoleId });
-
+        
         modelBuilder.Entity<UserRoleEntity>()
             .HasOne(ur => ur.User)
             .WithMany(ur => ur.UserRole)
             .HasForeignKey(ur => ur.UserId);
-
+            
         modelBuilder.Entity<UserRoleEntity>()
-            .HasOne(ur => ur.User)
+            .HasOne(ur => ur.Role)
             .WithMany(ur => ur.UserRole)
             .HasForeignKey(ur => ur.RoleId);
     }
