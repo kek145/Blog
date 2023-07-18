@@ -14,6 +14,12 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
     {
         _context = context;
     }
+
+    public IQueryable<ArticleCategoryEntity> GetAllArticleCategories()
+    {
+        return _context.ArticleCategory;
+    }
+
     public async Task AddArticleCategoryAsync(ArticleCategoryEntity entity)
     {
         await _context.ArticleCategory.AddAsync(entity);

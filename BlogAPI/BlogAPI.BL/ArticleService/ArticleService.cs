@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
@@ -40,54 +41,7 @@ public class ArticleService : IArticleService
         _userArticleRepository = userArticleRepository;
         _articleCategoryRepository = articleCategoryRepository;
     }
-
-    public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticles()
-    {
-        var articles = await _articleRepository.GetAllArticles()
-            .Select(x =>
-                new ArticleDto
-                {
-                    Title = x.Title,
-                    Content = x.Content,
-                    CreatedAt = x.CreatedAt,
-                    UpdatedAt = x.UpdatedAt
-                }
-            ).ToListAsync();
-        if (articles == null!)
-            return new BaseResponse<IEnumerable<ArticleDto>>().BadRequestResponse("Articles is not found!");
-        return new BaseResponse<IEnumerable<ArticleDto>>
-        {
-            Data = articles,
-            StatusCode = StatusCode.Ok,
-        };
-    }
-
-    public async Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId)
-    {
-        try
-        {
-            var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.FindArticleByIdAsync(articleId);
-            if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized to update this article");
-            
-            if (article == null!)
-            {
-                _logger.LogError("Article not found!");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
-            }
-
-            await _articleRepository.DeleteArticleAsync(article);
-
-            return new BaseResponse<ArticleEntity>().SuccessRequest("Task deleted successfully!");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
-        }
-    }
-
+    
     public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleCreateDto articleDto, string token)
     {
         var userId = _jwtTokenService.GetUserIdFromToken(token);
@@ -143,6 +97,81 @@ public class ArticleService : IArticleService
         }
     }
 
+    public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesAsync()
+    {
+        try
+        {
+            var articles = await _articleRepository.GetAllArticles()
+                .Select(x =>
+                    new ArticleDto
+                    {
+                        Title = x.Title,
+                        Content = x.Content,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt
+                    }
+                ).ToListAsync();
+            if (articles == null!)
+                return new BaseResponse<IEnumerable<ArticleDto>>().BadRequestResponse("Articles is not found!");
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Data = articles,
+                StatusCode = StatusCode.Ok,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Description = "Internal server error.",
+                StatusCode = StatusCode.InternalServerError
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesByCategoryAsync(string categoryName)
+    {
+        try
+        {
+            var articles = await _articleRepository.GetAllArticles()
+                .Where(article => article.ArticleCategory
+                    .Any(articleCategory => articleCategory.Category.CategoryName == categoryName))
+                .Select(x => 
+                    new ArticleDto
+                    {
+                        Title = x.Title,
+                        Content = x.Content,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt
+                    }).ToListAsync();
+
+            if (articles == null!)
+            {
+                return new BaseResponse<IEnumerable<ArticleDto>>()
+                {
+                    Description = "Articles is not found!",
+                    StatusCode = StatusCode.BadRequest
+                };
+            }
+
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Data = articles,
+                StatusCode = StatusCode.Ok
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Description = "Internal Server error",
+                StatusCode = StatusCode.InternalServerError
+            };
+        }
+    }
+
     public async Task<IBaseResponse<ArticleEntity>> UpdateArticleAsync(ArticleUpdateDto articleDto, string token, int articleId)
     {
         try
@@ -174,6 +203,32 @@ public class ArticleService : IArticleService
 
             _logger.LogInformation("Article successfully updated!");
             return new BaseResponse<ArticleEntity>().SuccessRequest("Article successfully updated!");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
+        }
+    }
+    
+    public async Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId)
+    {
+        try
+        {
+            var userId = _jwtTokenService.GetUserIdFromToken(token);
+            var article = await _articleRepository.FindArticleByIdAsync(articleId);
+            if (!userId.HasValue)
+                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            
+            if (article == null!)
+            {
+                _logger.LogError("Article not found!");
+                return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
+            }
+
+            await _articleRepository.DeleteArticleAsync(article);
+
+            return new BaseResponse<ArticleEntity>().SuccessRequest("Task deleted successfully!");
         }
         catch (Exception ex)
         {

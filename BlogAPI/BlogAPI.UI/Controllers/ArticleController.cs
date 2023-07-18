@@ -39,9 +39,24 @@ public class ArticleController : ControllerBase
     [Route("AllArticles")]
     public async Task<IActionResult> GetAllArticles()
     {
-        var response = await _articleService.GetAllArticles();
+        var response = await _articleService.GetAllArticlesAsync();
         if (response == null!)
             return BadRequest(new { error = "Article is not found!"});
+
+        return Ok(new { response.Data });
+    }
+
+    [HttpGet]
+    [Route("GetAllArticlesByCategory/{category}")]
+    public async Task<IActionResult> GetAllArticlesByCategory(string category)
+    {
+        var response = await _articleService.GetAllArticlesByCategoryAsync(category);
+
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { error = response.Description });
+        
+        if(response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
+            return StatusCode(500, new { error = response.Description });
 
         return Ok(new { response.Data });
     }
