@@ -37,7 +37,7 @@ public class ArticleController : ControllerBase
     }
 
     [HttpPut]
-    [Route("UpdateArticle/{articleId}")]
+    [Route("UpdateArticle/{articleId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
     public async Task<IActionResult> UpdateArticle([FromBody] ArticleDtoUpdate request, int articleId)
     {
@@ -50,5 +50,13 @@ public class ArticleController : ControllerBase
             return StatusCode(500, "Internal server error!");
 
         return Ok(new { response.Description });
+    }
+
+    [HttpDelete]
+    [Route("DeleteArticle/{articleId:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
+    public async Task<IActionResult> DeleteArticle(int articleId)
+    {
+        return Ok();
     }
 }
