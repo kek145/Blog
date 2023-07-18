@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text;
 using System.Globalization;
-using BlogAPI.BL.DTOs;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlogAPI.DAL.RoleRepository;
@@ -9,8 +9,8 @@ using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using BlogAPI.Security.HashDataHelper;
+using BlogAPI.BL.DTOs.AuthenticationDto;
 using Microsoft.Extensions.Configuration;
 
 namespace BlogAPI.BL.AuthenticationService;

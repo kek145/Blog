@@ -1,6 +1,6 @@
 ﻿using System;
-using BlogAPI.BL.DTOs;
 using System.Threading.Tasks;
+using BlogAPI.BL.DTOs.RegistrationDto;
 using BlogAPI.Domain.Response;
 using BlogAPI.DAL.RoleRepository;
 using BlogAPI.DAL.UserRepository;

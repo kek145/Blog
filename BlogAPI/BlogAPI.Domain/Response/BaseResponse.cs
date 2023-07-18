@@ -6,6 +6,7 @@ public class BaseResponse<T> : IBaseResponse<T>
 {
     public string Description { get; set; } = null!;
     public StatusCode StatusCode { get; set; }
+    public T Data { get; set; }
 
     public  BaseResponse<T> SuccessRequest(string description)
     {
@@ -39,5 +40,5 @@ public interface IBaseResponse<T>
 {
     string Description { get; }
     StatusCode StatusCode { get; }
-    BaseResponse<T> SuccessRequest(string description);
+    T Data { get; }
 }

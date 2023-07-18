@@ -1,7 +1,7 @@
-﻿using BlogAPI.BL.DTOs;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.ArticleService;
+using BlogAPI.BL.DTOs.ArticleDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -21,7 +21,7 @@ public class ArticleController : ControllerBase
     [HttpPost]
     [Route("CreateArticle")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Author")]
-    public async Task<IActionResult> CreateArticle([FromBody] ArticleDtoCreate request)
+    public async Task<IActionResult> CreateArticle([FromBody] ArticleCreateDto request)
     {
         string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.CreateNewArticleAsync(request, token);
@@ -37,19 +37,19 @@ public class ArticleController : ControllerBase
 
     [HttpGet]
     [Route("AllArticles")]
-    public IActionResult GetAllArticles()
+    public async Task<IActionResult> GetAllArticles()
     {
-        var response = _articleService.GetAllArticles();
+        var response = await _articleService.GetAllArticles();
         if (response == null!)
             return BadRequest(new { error = "Article is not found!"});
 
-        return Ok(new { response });
+        return Ok(new { response.Data });
     }
 
     [HttpPut]
     [Route("UpdateArticle/{articleId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
-    public async Task<IActionResult> UpdateArticle([FromBody] ArticleDtoUpdate request, int articleId)
+    public async Task<IActionResult> UpdateArticle([FromBody] ArticleUpdateDto request, int articleId)
     {
         string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.UpdateArticleAsync(request, token, articleId);

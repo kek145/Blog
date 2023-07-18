@@ -26,10 +26,12 @@ public class ArticleRepository : IArticleRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateArticleAsync(ArticleEntity entity)
+    public async Task<ArticleEntity> UpdateArticleAsync(ArticleEntity entity)
     {
         _context.Article.Update(entity);
         await _context.SaveChangesAsync();
+
+        return entity;
     }
 
     public async Task DeleteArticleAsync(ArticleEntity entity)

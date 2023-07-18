@@ -1,4 +1,4 @@
-﻿using BlogAPI.BL.DTOs;
+﻿using BlogAPI.BL.DTOs.RegistrationDto;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.RegistrationService;

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.BL.DTOs;
+namespace BlogAPI.BL.DTOs.RegistrationDto;
 
 public class RegistrationDto
 {
@@ -16,5 +16,4 @@ public class RegistrationDto
     public string ConfirmPassword { get; set; } = string.Empty;
     [Required, MinLength(4)]
     public string RoleName { get; set; } = string.Empty;
-    
 }

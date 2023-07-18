@@ -8,7 +8,7 @@ public interface IArticleRepository
 {
     IQueryable<ArticleEntity> GetAllArticles();
     Task AddArticleAsync(ArticleEntity entity);
-    Task UpdateArticleAsync(ArticleEntity entity);
+    Task<ArticleEntity> UpdateArticleAsync(ArticleEntity entity);
     Task DeleteArticleAsync(ArticleEntity entity);
     Task<ArticleEntity> FindArticleByIdAsync(int articleId);
     Task<ArticleEntity> FindArticleByTitleAsync(string title);

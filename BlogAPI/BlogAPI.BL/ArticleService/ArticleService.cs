@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
-using BlogAPI.BL.DTOs;
+using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
+using System.Collections.Generic;
+using BlogAPI.BL.DTOs.ArticleDTOs;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
 using BlogAPI.DAL.ArticleRepository;
+using Microsoft.EntityFrameworkCore;
 using BlogAPI.DAL.CategoryRepository;
 using BlogAPI.Domain.Entity.Connection;
 using BlogAPI.DAL.UserArticleRepository;
@@ -38,12 +41,25 @@ public class ArticleService : IArticleService
         _articleCategoryRepository = articleCategoryRepository;
     }
 
-    public IQueryable<ArticleEntity> GetAllArticles()
+    public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticles()
     {
-        var articles = _articleRepository.GetAllArticles();
+        var articles = await _articleRepository.GetAllArticles()
+            .Select(x =>
+                new ArticleDto
+                {
+                    Title = x.Title,
+                    Content = x.Content,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                }
+            ).ToListAsync();
         if (articles == null!)
-            return null!;
-        return articles;
+            return new BaseResponse<IEnumerable<ArticleDto>>().BadRequestResponse("Articles is not found!");
+        return new BaseResponse<IEnumerable<ArticleDto>>
+        {
+            Data = articles,
+            StatusCode = StatusCode.Ok,
+        };
     }
 
     public async Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId)
@@ -72,7 +88,7 @@ public class ArticleService : IArticleService
         }
     }
 
-    public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleDtoCreate articleDto, string token)
+    public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleCreateDto articleDto, string token)
     {
         var userId = _jwtTokenService.GetUserIdFromToken(token);
         var category = await _categoryRepository.FindCategoryByNameAsync(articleDto.CategoryName);
@@ -127,7 +143,7 @@ public class ArticleService : IArticleService
         }
     }
 
-    public async Task<IBaseResponse<ArticleEntity>> UpdateArticleAsync(ArticleDtoUpdate articleDto, string token, int articleId)
+    public async Task<IBaseResponse<ArticleEntity>> UpdateArticleAsync(ArticleUpdateDto articleDto, string token, int articleId)
     {
         try
         {

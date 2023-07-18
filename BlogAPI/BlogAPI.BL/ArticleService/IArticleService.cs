@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using BlogAPI.BL.DTOs;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
+using System.Collections.Generic;
+using BlogAPI.BL.DTOs.ArticleDTOs;
 using BlogAPI.Domain.Entity.Table;
 
 namespace BlogAPI.BL.ArticleService;
 
 public interface IArticleService
 {
-    IQueryable<ArticleEntity> GetAllArticles();
+    Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticles();
     Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId);
-    Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleDtoCreate articleDto, string token);
-    Task<IBaseResponse<ArticleEntity>> UpdateArticleAsync(ArticleDtoUpdate articleDto, string token, int articleId);
+    Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleCreateDto articleDto, string token);
+    Task<IBaseResponse<ArticleEntity>> UpdateArticleAsync(ArticleUpdateDto articleDto, string token, int articleId);
 }
