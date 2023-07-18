@@ -1,0 +1,12 @@
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\bin\Debug\net7.0\BlogAPI.Domain.deps.json
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\bin\Debug\net7.0\BlogAPI.Domain.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\bin\Debug\net7.0\BlogAPI.Domain.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.csproj.AssemblyReference.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.AssemblyInfoInputs.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.AssemblyInfo.cs
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.csproj.CoreCompileInputs.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\refint\BlogAPI.Domain.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\BlogAPI.Domain.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.Domain\obj\Debug\net7.0\ref\BlogAPI.Domain.dll

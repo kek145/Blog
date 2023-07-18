@@ -1,0 +1,12 @@
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\bin\Debug\net7.0\BlogAPI.Security.deps.json
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\bin\Debug\net7.0\BlogAPI.Security.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\bin\Debug\net7.0\BlogAPI.Security.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.csproj.AssemblyReference.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.AssemblyInfoInputs.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.AssemblyInfo.cs
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.csproj.CoreCompileInputs.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\refint\BlogAPI.Security.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\BlogAPI.Security.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.Security\obj\Debug\net7.0\ref\BlogAPI.Security.dll

@@ -20,12 +20,7 @@ public class UserArticleRepository : IUserArticleRepository
         await _context.UserArticle.AddAsync(entity);
         await _context.SaveChangesAsync();
     }
-
-    public async Task DeleteUserArticleAsync(UserArticleEntity entity)
-    {
-        _context.UserArticle.Remove(entity);
-        await _context.SaveChangesAsync();
-    }
+    
     
     public async Task<UserArticleEntity> FindUserArticleByIdAsync(int userId, int articleId)
     {

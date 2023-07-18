@@ -1,0 +1,17 @@
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\bin\Debug\net7.0\BlogAPI.DAL.deps.json
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\bin\Debug\net7.0\BlogAPI.DAL.runtimeconfig.json
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\bin\Debug\net7.0\BlogAPI.DAL.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\bin\Debug\net7.0\BlogAPI.DAL.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\bin\Debug\net7.0\BlogAPI.Domain.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\bin\Debug\net7.0\BlogAPI.Domain.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.csproj.AssemblyReference.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.AssemblyInfoInputs.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.AssemblyInfo.cs
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.csproj.CoreCompileInputs.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.csproj.CopyComplete
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\refint\BlogAPI.DAL.dll
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.pdb
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\BlogAPI.DAL.genruntimeconfig.cache
+D:\GitHub\Blog\BlogAPI\BlogAPI.DAL\obj\Debug\net7.0\ref\BlogAPI.DAL.dll

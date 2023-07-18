@@ -9,7 +9,6 @@ namespace BlogAPI.UI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author, User")]
 public class ArticleController : ControllerBase
 {
     private readonly IArticleService _articleService;
@@ -34,6 +33,17 @@ public class ArticleController : ControllerBase
             return StatusCode(500, new { response.Description });
 
         return Ok(new { response.Description });
+    }
+
+    [HttpGet]
+    [Route("AllArticles")]
+    public IActionResult GetAllArticles()
+    {
+        var response = _articleService.GetAllArticles();
+        if (response == null!)
+            return BadRequest(new { error = "Article is not found!"});
+
+        return Ok(new { response });
     }
 
     [HttpPut]

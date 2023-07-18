@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BlogAPI.BL.DTOs;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
@@ -37,22 +38,30 @@ public class ArticleService : IArticleService
         _articleCategoryRepository = articleCategoryRepository;
     }
 
+    public IQueryable<ArticleEntity> GetAllArticles()
+    {
+        var articles = _articleRepository.GetAllArticles();
+        if (articles == null!)
+            return null!;
+        return articles;
+    }
+
     public async Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId)
     {
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
             var article = await _articleRepository.FindArticleByIdAsync(articleId);
-            if (userId.HasValue)
+            if (!userId.HasValue)
+                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            
+            if (article == null!)
             {
-                if (article == null!)
-                {
-                    _logger.LogError("Article not found!");
-                    return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
-                }
-
-                await _articleRepository.DeleteArticleAsync(article);
+                _logger.LogError("Article not found!");
+                return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
             }
+
+            await _articleRepository.DeleteArticleAsync(article);
 
             return new BaseResponse<ArticleEntity>().SuccessRequest("Task deleted successfully!");
         }
@@ -70,45 +79,45 @@ public class ArticleService : IArticleService
         var title = await _articleRepository.FindArticleByTitleAsync(articleDto.Title);
         try
         {
-            if (userId.HasValue)
+            if (!userId.HasValue)
+                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            
+            if (category == null!)
             {
-                if (category == null!)
-                {
-                    _logger.LogError("This category does not exist");
-                    return new BaseResponse<ArticleEntity>().BadRequestResponse("This category does not exist.");
-                }
-
-                if (title != null!)
-                {
-                    _logger.LogError("There is already an article with the same title");
-                    return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
-                }
-
-                var article = new ArticleEntity
-                {
-                    Title = articleDto.Title,
-                    Content = articleDto.Content,
-                    CreatedAt = articleDto.CreatedAt
-                };
-
-                var userArticle = new UserArticleEntity
-                {
-                    UserId = userId.Value,
-                    Article = article,
-                };
-
-                var articleCategory = new ArticleCategoryEntity
-                {
-                    Article = article,
-                    Category = category
-                };
-
-                await _articleRepository.AddArticleAsync(article);
-                await _userArticleRepository.AddUserArticleAsync(userArticle);
-                await _articleCategoryRepository.AddArticleCategoryAsync(articleCategory);
+                _logger.LogError("This category does not exist");
+                return new BaseResponse<ArticleEntity>().BadRequestResponse("This category does not exist.");
             }
 
-            _logger.LogInformation("The article has been successfully created!");
+            if (title != null!)
+            {
+                _logger.LogError("There is already an article with the same title");
+                return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
+            }
+
+            var article = new ArticleEntity
+            {
+                Title = articleDto.Title,
+                Content = articleDto.Content,
+                CreatedAt = articleDto.CreatedAt
+            };
+
+            var userArticle = new UserArticleEntity
+            {
+                UserId = userId.Value,
+                Article = article,
+            };
+
+            var articleCategory = new ArticleCategoryEntity
+            {
+                Article = article,
+                Category = category
+            };
+
+            await _articleRepository.AddArticleAsync(article);
+            await _userArticleRepository.AddUserArticleAsync(userArticle);
+            await _articleCategoryRepository.AddArticleCategoryAsync(articleCategory);
+
+                _logger.LogInformation("The article has been successfully created!");
             return new BaseResponse<ArticleEntity>().SuccessRequest("The article has been successfully created!");
         }
         catch (Exception ex)
@@ -126,27 +135,26 @@ public class ArticleService : IArticleService
             var article = await _articleRepository.FindArticleByIdAsync(articleId);
             var title = await _articleRepository.FindArticleByTitleAsync(articleDto.Title);
 
-            if (userId.HasValue)
+            if (!userId.HasValue)
+                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            
+            if (article == null!)
             {
-                if (article == null!)
-                {
-                    _logger.LogError("Article not found!");
-                    return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
-                }
-
-                if (title != null!)
-                {
-                    _logger.LogError("There is already an article with the same title!");
-                    return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
-                }
-
-                article.Title = articleDto.Title;
-                article.Content = articleDto.Content;
-                article.UpdatedAt = articleDto.UpdatedAt;
-
-                await _articleRepository.UpdateArticleAsync(article);
+                _logger.LogError("Article not found!");
+                return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
             }
-            else throw new UnauthorizedAccessException("User is not authorized to update this article");
+
+            if (title != null!)
+            {
+                _logger.LogError("There is already an article with the same title!");
+                return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
+            }
+
+            article.Title = articleDto.Title;
+            article.Content = articleDto.Content;
+            article.UpdatedAt = articleDto.UpdatedAt;
+
+            await _articleRepository.UpdateArticleAsync(article);
 
             _logger.LogInformation("Article successfully updated!");
             return new BaseResponse<ArticleEntity>().SuccessRequest("Article successfully updated!");

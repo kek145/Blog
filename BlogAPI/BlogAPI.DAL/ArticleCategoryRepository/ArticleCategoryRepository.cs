@@ -20,12 +20,6 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteArticleCategoryAsync(ArticleCategoryEntity entity)
-    {
-        _context.ArticleCategory.Remove(entity);
-        await _context.SaveChangesAsync();
-    }
-
     public async Task<ArticleCategoryEntity> FindArticleCategoryByIdAsync(int articleId, int categoryId)
     {
         var articleCategory = await _context.ArticleCategory.Where(find => find.ArticleId == articleId && find.CategoryId == categoryId).FirstOrDefaultAsync();
