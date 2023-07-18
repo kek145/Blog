@@ -68,8 +68,8 @@ public class RegistrationService : IRegistrationService
                 Role = role
             };
 
-            await _userRepository.AddNewUserAsync(userEntity);
-            await _userRoleRepository.AddNewUserRoleAsync(userRoleEntity);
+            await _userRepository.AddUserAsync(userEntity);
+            await _userRoleRepository.AddUserRoleAsync(userRoleEntity);
             
             _logger.LogInformation("Registration completed successfully!");
             return new BaseResponse<UserEntity>().SuccessRequest("Registration completed successfully!");

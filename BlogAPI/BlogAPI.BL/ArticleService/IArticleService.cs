@@ -8,4 +8,5 @@ namespace BlogAPI.BL.ArticleService;
 public interface IArticleService
 {
     Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleDtoCreate articleDto, string token);
+    Task<IBaseResponse<ArticleEntity>> UpdateArticleAsync(ArticleDtoUpdate articleDto, string token, int articleId);
 }

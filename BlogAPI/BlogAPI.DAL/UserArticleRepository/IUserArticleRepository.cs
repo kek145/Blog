@@ -5,7 +5,7 @@ namespace BlogAPI.DAL.UserArticleRepository;
 
 public interface IUserArticleRepository
 {
-    Task CreateUserArticleAsync(UserArticleEntity entity);
+    Task AddUserArticleAsync(UserArticleEntity entity);
     Task DeleteUserArticleAsync(UserArticleEntity entity);
     Task<UserArticleEntity> FindUserArticleByIdAsync(int userId, int articleId);
 }

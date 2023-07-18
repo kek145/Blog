@@ -1,7 +1,7 @@
 ﻿using BlogAPI.BL.DTOs;
 using System.Threading.Tasks;
-using BlogAPI.BL.ArticleService;
 using Microsoft.AspNetCore.Mvc;
+using BlogAPI.BL.ArticleService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -22,7 +22,7 @@ public class ArticleController : ControllerBase
     [HttpPost]
     [Route("CreateArticle")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Author")]
-    public async Task<IActionResult> CreateNewTask([FromBody] ArticleDtoCreate request)
+    public async Task<IActionResult> CreateArticle([FromBody] ArticleDtoCreate request)
     {
         string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.CreateNewArticleAsync(request, token);
@@ -36,10 +36,19 @@ public class ArticleController : ControllerBase
         return Ok(new { response.Description });
     }
 
-    [HttpGet]
-    [Route("SecurityEndPoint")]
-    public IActionResult GetAll()
+    [HttpPut]
+    [Route("UpdateArticle/{articleId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
+    public async Task<IActionResult> UpdateArticle([FromBody] ArticleDtoUpdate request, int articleId)
     {
-        return Ok("gg");
+        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _articleService.UpdateArticleAsync(request, token, articleId);
+
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { error = response.Description });
+        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
+            return StatusCode(500, "Internal server error!");
+
+        return Ok(new { response.Description });
     }
 }

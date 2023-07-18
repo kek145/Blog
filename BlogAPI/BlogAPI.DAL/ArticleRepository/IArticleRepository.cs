@@ -7,7 +7,7 @@ namespace BlogAPI.DAL.ArticleRepository;
 public interface IArticleRepository
 {
     IQueryable<ArticleEntity> GetAllArticles();
-    Task CreateArticleAsync(ArticleEntity entity);
+    Task AddArticleAsync(ArticleEntity entity);
     Task UpdateArticleAsync(ArticleEntity entity);
     Task DeleteArticleAsync(ArticleEntity entity);
     Task<ArticleEntity> FindArticleByIdAsync(int articleId);

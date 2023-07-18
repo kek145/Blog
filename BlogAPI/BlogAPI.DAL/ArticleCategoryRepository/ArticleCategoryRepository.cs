@@ -14,7 +14,7 @@ public class ArticleCategoryRepository : IArticleCategoryRepository
     {
         _context = context;
     }
-    public async Task CreateArticleCategoryAsync(ArticleCategoryEntity entity)
+    public async Task AddArticleCategoryAsync(ArticleCategoryEntity entity)
     {
         await _context.ArticleCategory.AddAsync(entity);
         await _context.SaveChangesAsync();

@@ -20,7 +20,7 @@ public class CategoryRepository : ICategoryRepository
         return _context.Category;
     }
 
-    public async Task CreateCategoryAsync(CategoryEntity entity)
+    public async Task AddCategoryAsync(CategoryEntity entity)
     {
         await _context.Category.AddAsync(entity);
         await _context.SaveChangesAsync();

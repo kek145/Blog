@@ -20,7 +20,7 @@ public class ArticleRepository : IArticleRepository
         return _context.Article;
     }
 
-    public async Task CreateArticleAsync(ArticleEntity entity)
+    public async Task AddArticleAsync(ArticleEntity entity)
     {
         await _context.Article.AddAsync(entity);
         await _context.SaveChangesAsync();

@@ -7,7 +7,7 @@ namespace BlogAPI.DAL.CategoryRepository;
 public interface ICategoryRepository
 {
     IQueryable<CategoryEntity> GetAllCategories();
-    Task CreateCategoryAsync(CategoryEntity entity);
+    Task AddCategoryAsync(CategoryEntity entity);
     Task UpdateCategoryAsync(CategoryEntity entity);
     Task DeleteCategoryAsync(CategoryEntity entity);
     Task<CategoryEntity> FindCategoryByIdAsync(int categoryId);

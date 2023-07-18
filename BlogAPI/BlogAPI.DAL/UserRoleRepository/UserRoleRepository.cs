@@ -15,7 +15,7 @@ public class UserRoleRepository : IUserRoleRepository
         _context = context;
     }
 
-    public async Task AddNewUserRoleAsync(UserRoleEntity entity)
+    public async Task AddUserRoleAsync(UserRoleEntity entity)
     {
         await _context.UserRole.AddAsync(entity);
         await _context.SaveChangesAsync();

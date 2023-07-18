@@ -15,7 +15,7 @@ public class UserArticleRepository : IUserArticleRepository
         _context = context;
     }
 
-    public async Task CreateUserArticleAsync(UserArticleEntity entity)
+    public async Task AddUserArticleAsync(UserArticleEntity entity)
     {
         await _context.UserArticle.AddAsync(entity);
         await _context.SaveChangesAsync();

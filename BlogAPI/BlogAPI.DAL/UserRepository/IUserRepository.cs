@@ -6,7 +6,7 @@ namespace BlogAPI.DAL.UserRepository;
 
 public interface IUserRepository
 {
-    Task AddNewUserAsync(UserEntity entity);
+    Task AddUserAsync(UserEntity entity);
     Task UpdateUserAsync(UserEntity entity);
     Task DeleteUserAsync(UserEntity entity);
     Task<UserEntity> FindUserByIdAsync(int userId);
