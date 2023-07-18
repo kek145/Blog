@@ -93,7 +93,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserRoleEntity>()
                 .HasOne(ur => ur.User)
                 .WithMany(ur => ur.UserRole)
-                .HasForeignKey(ur => ur.UserId);
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<UserRoleEntity>()
             .HasOne(ur => ur.Role)
@@ -106,7 +107,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserArticleEntity>()
             .HasOne(ua => ua.Article)
             .WithMany(ua => ua.UserArticle)
-            .HasForeignKey(ua => ua.ArticleId);
+            .HasForeignKey(ua => ua.ArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<UserArticleEntity>()
             .HasOne(ua => ua.User)
@@ -119,7 +121,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserCommentEntity>()
             .HasOne(uc => uc.User)
             .WithMany(uc => uc.UserComment)
-            .HasForeignKey(uc => uc.UserId);
+            .HasForeignKey(uc => uc.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<UserCommentEntity>()
             .HasOne(uc => uc.Comment)
@@ -132,7 +135,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasOne(ac => ac.Comment)
             .WithMany(ac => ac.ArticleComment)
-            .HasForeignKey(ac => ac.CommentId);
+            .HasForeignKey(ac => ac.CommentId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasOne(ac => ac.Article)
@@ -145,7 +149,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasOne(ac => ac.Article)
             .WithMany(ac => ac.ArticleCategory)
-            .HasForeignKey(ac => ac.ArticleId);
+            .HasForeignKey(ac => ac.ArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasOne(ac => ac.Category)

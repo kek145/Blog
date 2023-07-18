@@ -47,7 +47,7 @@ public class ArticleController : ControllerBase
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
             return BadRequest(new { error = response.Description });
         if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, "Internal server error!");
+            return StatusCode(500, new { error = response.Description });
 
         return Ok(new { response.Description });
     }
@@ -57,6 +57,14 @@ public class ArticleController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
     public async Task<IActionResult> DeleteArticle(int articleId)
     {
-        return Ok();
+        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _articleService.DeleteArticleAsync(token, articleId);
+
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { response.Description });
+        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
+            return StatusCode(500, new { error = response.Description });
+
+        return Ok(new { response.Description });
     }
 }

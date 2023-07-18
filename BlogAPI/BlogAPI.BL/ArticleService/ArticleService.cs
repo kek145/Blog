@@ -37,6 +37,32 @@ public class ArticleService : IArticleService
         _articleCategoryRepository = articleCategoryRepository;
     }
 
+    public async Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId)
+    {
+        try
+        {
+            var userId = _jwtTokenService.GetUserIdFromToken(token);
+            var article = await _articleRepository.FindArticleByIdAsync(articleId);
+            if (userId.HasValue)
+            {
+                if (article == null!)
+                {
+                    _logger.LogError("Article not found!");
+                    return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
+                }
+
+                await _articleRepository.DeleteArticleAsync(article);
+            }
+
+            return new BaseResponse<ArticleEntity>().SuccessRequest("Task deleted successfully!");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
+        }
+    }
+
     public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleDtoCreate articleDto, string token)
     {
         var userId = _jwtTokenService.GetUserIdFromToken(token);

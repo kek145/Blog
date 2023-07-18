@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using BlogAPI.DAL.Core;
+using System.Threading.Tasks;
 using BlogAPI.Domain.Entity.Connection;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +30,6 @@ public class UserRoleRepository : IUserRoleRepository
     public async Task<UserRoleEntity> GetUserRoleAsync(int userId, int roleId)
     {
         var userRole = await _context.UserRole.Where(find => find.UserId == userId && find.RoleId == roleId).FirstOrDefaultAsync();
-        return userRole;
+        return userRole!;
     }
 }
