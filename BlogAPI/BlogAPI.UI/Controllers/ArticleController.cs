@@ -61,12 +61,35 @@ public class ArticleController : ControllerBase
         return Ok(new { response.Data });
     }
 
+    [HttpGet]
+    [Route("GetArticleById/{articleId:int}")]
+    public async Task<IActionResult> GetArticleById(int articleId)
+    {
+        var response = await _articleService.GetArticleByIdAsync(articleId);
+
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { error = response.Description });
+
+        return Ok(new { response.Data });
+    }
+
+    [HttpGet]
+    [Route("GetAllArticle/{query}")]
+    public async Task<IActionResult> GetAllArticlesBySearch(string query)
+    {
+        var response = await _articleService.GetArticleBySearchAsync(query);
+        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
+            return StatusCode(500, new { error = response.Description });
+
+        return Ok(new { response.Data });
+    }
+
     [HttpPut]
     [Route("UpdateArticle/{articleId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
     public async Task<IActionResult> UpdateArticle([FromBody] ArticleUpdateDto request, int articleId)
     {
-        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.UpdateArticleAsync(request, token, articleId);
 
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)

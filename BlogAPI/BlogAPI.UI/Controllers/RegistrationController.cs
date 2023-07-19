@@ -17,7 +17,7 @@ public class RegistrationController : ControllerBase
     }
 
     [HttpPost]
-    [Route("Register")]
+    [Route("SignUp")]
     public async Task<IActionResult> RegistrationAccount([FromBody] RegistrationDto request)
     {
         var response = await _registrationService.RegistrationServiceAsync(request);

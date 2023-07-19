@@ -18,7 +18,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost]
-    [Route("Authenticate")]
+    [Route("SignIn")]
     public async Task<IActionResult> AuthenticationAccount([FromBody] AuthenticationDto request)
     {
         try

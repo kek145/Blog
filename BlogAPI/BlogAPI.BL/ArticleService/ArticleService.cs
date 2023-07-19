@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
@@ -130,6 +129,74 @@ public class ArticleService : IArticleService
         }
     }
 
+    public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetArticleBySearchAsync(string query)
+    {
+        try
+        {
+            var articles = await _articleRepository.GetAllArticles()
+                .Where(x => x.Title.Contains(query) || x.Content.Contains(query))
+                .Select(x =>
+                    new ArticleDto
+                    {
+                        Title = x.Title,
+                        Content = x.Content,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt
+                    })
+                .ToListAsync();
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Data = articles,
+                StatusCode = StatusCode.Ok,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Description = "Internal server error.",
+                StatusCode = StatusCode.InternalServerError
+            };
+        }
+    }
+
+    public async Task<IBaseResponse<ArticleDto>> GetArticleByIdAsync(int articleId)
+    {
+        try
+        {
+            var article = await _articleRepository.GetAllArticles()
+                .Where(find => find.ArticleId == articleId)
+                .Select(x =>
+                    new ArticleDto
+                    {
+                        Title = x.Title,
+                        Content = x.Content,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt
+                    })
+                .FirstOrDefaultAsync();
+
+            if (article == null!)
+            {
+                _logger.LogError("Article is not found");
+                return new BaseResponse<ArticleDto>().BadRequestResponse("Article is not found!");
+            }
+            
+            
+            return new BaseResponse<ArticleDto>
+            {
+                Data = article,
+                StatusCode = StatusCode.Ok
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<ArticleDto>().InternalServerErrorResponse("Internal server error");
+        }
+    }
+
     public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesByCategoryAsync(string categoryName)
     {
         try
@@ -148,13 +215,14 @@ public class ArticleService : IArticleService
 
             if (articles == null!)
             {
+                _logger.LogError("Articles is not found!");
                 return new BaseResponse<IEnumerable<ArticleDto>>()
                 {
                     Description = "Articles is not found!",
                     StatusCode = StatusCode.BadRequest
                 };
             }
-
+            _logger.LogInformation("All articles!");
             return new BaseResponse<IEnumerable<ArticleDto>>
             {
                 Data = articles,
