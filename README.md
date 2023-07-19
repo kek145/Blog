@@ -6,6 +6,7 @@ Blog FullStack Application(.NET + Angular)
   1.C#/.NET - (.NET 7)
   2.ASP.NET Core Web API
   3.Entityframework Core
+  4.Microsoft SQL Server
   
 - Frontend
   1.HTML/CSS
@@ -14,8 +15,8 @@ Blog FullStack Application(.NET + Angular)
   4.Angular
   
 - Tools
-  1.Docker
-  2.MS SQL Server
+  1.Nginx
+  2.Docker
   
 - Cloud
   1.AWS
