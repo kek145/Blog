@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 using BlogAPI.DAL.CategoryRepository;
 using BlogAPI.BL.AuthenticationService;
+using BlogAPI.BL.EditAuthenticationService;
 using BlogAPI.DAL.UserArticleRepository;
 using Microsoft.Extensions.Configuration;
 using BlogAPI.DAL.ArticleCategoryRepository;
@@ -55,6 +56,7 @@ builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserArticleRepository, UserArticleRepository>();
 builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
+builder.Services.AddScoped<IEditAuthenticationService, EditAuthenticationService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

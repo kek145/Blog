@@ -35,12 +35,18 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity> FindUserByIdAsync(int userId)
     {
         var user = await _context.User.FindAsync(userId);
-        return user;
+        return user!;
     }
 
     public async Task<UserEntity> FindUserByEmailAsync(string email)
     {
         var user = await _context.User.Where(find => find.Email == email).FirstOrDefaultAsync();
-        return user;
+        return user!;
+    }
+
+    public async Task<UserEntity> FindUserByFirstLastNameAsync(string firstName, string lastName)
+    {
+        var user = await _context.User.Where(find => find.FirstName == firstName && find.LastName == lastName).FirstOrDefaultAsync();
+        return user!;
     }
 }

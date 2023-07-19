@@ -11,4 +11,5 @@ public interface IUserRepository
     Task DeleteUserAsync(UserEntity entity);
     Task<UserEntity> FindUserByIdAsync(int userId);
     Task<UserEntity> FindUserByEmailAsync(string email);
+    Task<UserEntity> FindUserByFirstLastNameAsync(string firstName, string lastName);
 }
