@@ -5,26 +5,61 @@ using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
 using BlogAPI.DAL.UserRepository;
 using System.Collections.Generic;
+using System.Linq;
 using BlogAPI.BL.DTOs.EditUserDto;
 using Microsoft.Extensions.Logging;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.BL.DTOs.AuthenticationDto;
+using BlogAPI.DAL.ArticleRepository;
+using BlogAPI.Domain.Entity.Table;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.BL.AccountService;
 
 public class AccountService : IAccountService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IJwtTokenService _jwtTokenService;
     private readonly ILogger<AccountService> _logger;
+    private readonly IJwtTokenService _jwtTokenService;
+    private readonly IArticleRepository _articleRepository;
 
-    public AccountService(IUserRepository userRepository, IJwtTokenService jwtTokenService, ILogger<AccountService> logger)
+    public AccountService(IUserRepository userRepository, ILogger<AccountService> logger, IJwtTokenService jwtTokenService, IArticleRepository articleRepository)
     {
-        _logger = logger;
         _userRepository = userRepository;
+        _logger = logger;
         _jwtTokenService = jwtTokenService;
+        _articleRepository = articleRepository;
     }
 
+
+    public async Task<IBaseResponse<UserEntity>> DeleteUserAccountAsync(string token)
+    {
+        try
+        {
+            var userId = _jwtTokenService.GetUserIdFromToken(token);
+            var user = await _userRepository.FindUserByIdAsync(userId!.Value);
+
+            var article = await _articleRepository.GetAllArticles()
+                .Where(x => x.UserArticle
+                    .Any(userArticles => user.UserId == userId)).FirstOrDefaultAsync();
+
+            await _articleRepository.DeleteArticleAsync(article!);
+            
+            if (user == null!)
+            {
+                _logger.LogError("User is not found!");
+                return new BaseResponse<UserEntity>().ServerResponse("User is not found!", StatusCode.BadRequest);
+            }
+
+            await _userRepository.DeleteUserAsync(user);
+            return new BaseResponse<UserEntity>().ServerResponse("Account successfully deleted!", StatusCode.Ok);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<UserEntity>().ServerResponse("Internal server error", StatusCode.InternalServerError);
+        }
+    }
 
     public async Task<IBaseResponse<IEnumerable<UpdateUserDto>>> UpdateUserInfoAsync(UpdateUserDto updateDto, string token)
     {

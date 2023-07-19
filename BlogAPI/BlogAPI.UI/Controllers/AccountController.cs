@@ -22,7 +22,7 @@ public class AccountController : ControllerBase
 
     [HttpPut]
     [Route("User-Info")]
-    public async Task<IActionResult> EditUserInfo([FromBody] UpdateUserDto request, int userId)
+    public async Task<IActionResult> EditUserInfo([FromBody] UpdateUserDto request)
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _accountService.UpdateUserInfoAsync(request, token);
@@ -43,6 +43,22 @@ public class AccountController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _accountService.UpdateAuthenticationInfoAsync(request, token);
+        
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { error = response.Description });
+
+        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
+            return StatusCode(500, new { error = response.Description });
+        
+        return Ok(new { response.Description });
+    }
+
+    [HttpDelete]
+    [Route("DeleteAccount")]
+    public async Task<IActionResult> DeleteUserAccount()
+    {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _accountService.DeleteUserAccountAsync(token);
         
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
             return BadRequest(new { error = response.Description });

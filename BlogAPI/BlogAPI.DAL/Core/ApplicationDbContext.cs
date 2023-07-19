@@ -113,7 +113,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserArticleEntity>()
             .HasOne(ua => ua.User)
             .WithMany(ua => ua.UserArticle)
-            .HasForeignKey(ua => ua.UserId);
+            .HasForeignKey(ua => ua.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<UserCommentEntity>()
             .HasKey(uc => new { uc.UserId, uc.CommentId });
@@ -127,7 +128,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserCommentEntity>()
             .HasOne(uc => uc.Comment)
             .WithMany(uc => uc.UserComment)
-            .HasForeignKey(uc => uc.CommentId);
+            .HasForeignKey(uc => uc.CommentId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasKey(ac => new { ac.ArticleId, ac.CommentId });
@@ -141,7 +143,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasOne(ac => ac.Article)
             .WithMany(ac => ac.ArticleComment)
-            .HasForeignKey(ac => ac.ArticleId);
+            .HasForeignKey(ac => ac.ArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasKey(ac => new { ac.ArticleId, ac.CategoryId });
@@ -155,6 +158,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasOne(ac => ac.Category)
             .WithMany(ac => ac.ArticleCategory)
-            .HasForeignKey(ac => ac.CategoryId);
+            .HasForeignKey(ac => ac.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

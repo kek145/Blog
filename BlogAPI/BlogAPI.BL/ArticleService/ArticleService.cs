@@ -256,7 +256,7 @@ public class ArticleService : IArticleService
             await _articleRepository.UpdateArticleAsync(article);
 
             _logger.LogInformation("Article successfully updated!");
-            return new BaseResponse<ArticleEntity>().ServerResponse("Article successfully updated!", StatusCode.BadRequest);
+            return new BaseResponse<ArticleEntity>().ServerResponse("Article successfully updated!", StatusCode.Ok);
         }
         catch (Exception ex)
         {
