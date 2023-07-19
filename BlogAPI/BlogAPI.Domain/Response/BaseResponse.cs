@@ -1,4 +1,5 @@
-﻿using BlogAPI.Domain.Enum;
+﻿using System.Collections.Generic;
+using BlogAPI.Domain.Enum;
 
 namespace BlogAPI.Domain.Response;
 
@@ -6,32 +7,23 @@ public class BaseResponse<T> : IBaseResponse<T>
 {
     public string Description { get; set; } = null!;
     public StatusCode StatusCode { get; set; }
-    public T Data { get; set; }
+    public T? Data { get; set; }
 
-    public  BaseResponse<T> SuccessRequest(string description)
+    public BaseResponse<T> ServerResponse(string description, StatusCode statusCode)
     {
         return new BaseResponse<T>
         {
             Description = description,
-            StatusCode = StatusCode.Ok
+            StatusCode = statusCode
         };
     }
 
-    public BaseResponse<T> BadRequestResponse(string description)
+    public BaseResponse<IEnumerable<T>> ServerResponseEnumerable(string description, StatusCode statusCode)
     {
-        return new BaseResponse<T>
+        return new BaseResponse<IEnumerable<T>>
         {
             Description = description,
-            StatusCode = StatusCode.BadRequest
-        };
-    }
-
-    public BaseResponse<T> InternalServerErrorResponse(string description)
-    {
-        return new BaseResponse<T>
-        {
-            Description = description,
-            StatusCode = StatusCode.InternalServerError
+            StatusCode = statusCode
         };
     }
 }
@@ -40,5 +32,5 @@ public interface IBaseResponse<T>
 {
     string Description { get; }
     StatusCode StatusCode { get; }
-    T Data { get; }
+    T? Data { get; }
 }

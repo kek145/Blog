@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using BlogAPI.DAL.UserRoleRepository;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.Domain.Entity.Connection;
+using BlogAPI.Domain.Enum;
 
 namespace BlogAPI.BL.RegistrationService;
 
@@ -37,19 +38,19 @@ public class RegistrationService : IRegistrationService
             if (user != null!)
             {
                 _logger.LogError("User with this email is already registered!");
-                return new BaseResponse<UserEntity>().BadRequestResponse("User with this email is already registered!");
+                return new BaseResponse<UserEntity>().ServerResponse("User with this email is already registered!", StatusCode.BadRequest);
             }
 
             if (role == null!)
             {
                 _logger.LogError("This type of account cannot be created!");
-                return new BaseResponse<UserEntity>().BadRequestResponse("This type of account cannot be created!");
+                return new BaseResponse<UserEntity>().ServerResponse("This type of account cannot be created!", StatusCode.BadRequest);
             }
 
             if (registrationDto.Password != registrationDto.ConfirmPassword)
             {
                 _logger.LogError("Password mismatch!");
-                return new BaseResponse<UserEntity>().BadRequestResponse("Password mismatch!");
+                return new BaseResponse<UserEntity>().ServerResponse("Password mismatch!", StatusCode.BadRequest);
             }
 
             PasswordHasher.CreatePasswordHash(registrationDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -72,12 +73,12 @@ public class RegistrationService : IRegistrationService
             await _userRoleRepository.AddUserRoleAsync(userRoleEntity);
             
             _logger.LogInformation("Registration completed successfully!");
-            return new BaseResponse<UserEntity>().SuccessRequest("Registration completed successfully!");
+            return new BaseResponse<UserEntity>().ServerResponse("Registration completed successfully!", StatusCode.Ok);
         }
         catch (Exception)
         {
             _logger.LogError("Some problems with the repositories or the service itself!");
-            return new BaseResponse<UserEntity>().InternalServerErrorResponse("Some problems with the repositories or the service itself!");
+            return new BaseResponse<UserEntity>().ServerResponse("Some problems with the repositories or the service itself!", StatusCode.InternalServerError);
         }
     }
 }

@@ -54,13 +54,13 @@ public class ArticleService : IArticleService
             if (category == null!)
             {
                 _logger.LogError("This category does not exist");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("This category does not exist.");
+                return new BaseResponse<ArticleEntity>().ServerResponse("This category does not exist.", StatusCode.BadRequest);
             }
 
             if (title != null!)
             {
                 _logger.LogError("There is already an article with the same title");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
+                return new BaseResponse<ArticleEntity>().ServerResponse("There is already an article with the same title.", StatusCode.BadRequest);
             }
 
             var article = new ArticleEntity
@@ -87,12 +87,12 @@ public class ArticleService : IArticleService
             await _articleCategoryRepository.AddArticleCategoryAsync(articleCategory);
 
                 _logger.LogInformation("The article has been successfully created!");
-            return new BaseResponse<ArticleEntity>().SuccessRequest("The article has been successfully created!");
+            return new BaseResponse<ArticleEntity>().ServerResponse("The article has been successfully created!", StatusCode.Ok);
         }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
+            return new BaseResponse<ArticleEntity>().ServerResponse("Internal server error", StatusCode.InternalServerError);
         }
     }
 
@@ -110,8 +110,6 @@ public class ArticleService : IArticleService
                         UpdatedAt = x.UpdatedAt
                     }
                 ).ToListAsync();
-            if (articles == null!)
-                return new BaseResponse<IEnumerable<ArticleDto>>().BadRequestResponse("Articles is not found!");
             return new BaseResponse<IEnumerable<ArticleDto>>
             {
                 Data = articles,
@@ -121,11 +119,7 @@ public class ArticleService : IArticleService
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<IEnumerable<ArticleDto>>
-            {
-                Description = "Internal server error.",
-                StatusCode = StatusCode.InternalServerError
-            };
+            return new BaseResponse<ArticleDto>().ServerResponseEnumerable("Internal server error", StatusCode.InternalServerError);
         }
     }
 
@@ -180,7 +174,7 @@ public class ArticleService : IArticleService
             if (article == null!)
             {
                 _logger.LogError("Article is not found");
-                return new BaseResponse<ArticleDto>().BadRequestResponse("Article is not found!");
+                return new BaseResponse<ArticleDto>().ServerResponse("Article is not found!", StatusCode.BadRequest);
             }
             
             
@@ -193,7 +187,7 @@ public class ArticleService : IArticleService
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<ArticleDto>().InternalServerErrorResponse("Internal server error");
+            return new BaseResponse<ArticleDto>().ServerResponse("Internal server error", StatusCode.InternalServerError);
         }
     }
 
@@ -216,11 +210,7 @@ public class ArticleService : IArticleService
             if (articles == null!)
             {
                 _logger.LogError("Articles is not found!");
-                return new BaseResponse<IEnumerable<ArticleDto>>()
-                {
-                    Description = "Articles is not found!",
-                    StatusCode = StatusCode.BadRequest
-                };
+                return new BaseResponse<ArticleDto>().ServerResponseEnumerable("Articles is not found!", StatusCode.BadRequest);
             }
             _logger.LogInformation("All articles!");
             return new BaseResponse<IEnumerable<ArticleDto>>
@@ -232,11 +222,7 @@ public class ArticleService : IArticleService
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<IEnumerable<ArticleDto>>
-            {
-                Description = "Internal Server error",
-                StatusCode = StatusCode.InternalServerError
-            };
+            return new BaseResponse<ArticleDto>().ServerResponseEnumerable("Internal server error", StatusCode.InternalServerError);
         }
     }
 
@@ -254,13 +240,13 @@ public class ArticleService : IArticleService
             if (article == null!)
             {
                 _logger.LogError("Article not found!");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
+                return new BaseResponse<ArticleEntity>().ServerResponse("Article not found!", StatusCode.BadRequest);
             }
 
             if (title != null!)
             {
                 _logger.LogError("There is already an article with the same title!");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("There is already an article with the same title.");
+                return new BaseResponse<ArticleEntity>().ServerResponse("There is already an article with the same title.", StatusCode.BadRequest);
             }
 
             article.Title = articleDto.Title;
@@ -270,12 +256,12 @@ public class ArticleService : IArticleService
             await _articleRepository.UpdateArticleAsync(article);
 
             _logger.LogInformation("Article successfully updated!");
-            return new BaseResponse<ArticleEntity>().SuccessRequest("Article successfully updated!");
+            return new BaseResponse<ArticleEntity>().ServerResponse("Article successfully updated!", StatusCode.BadRequest);
         }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
+            return new BaseResponse<ArticleEntity>().ServerResponse("Internal server error", StatusCode.InternalServerError);
         }
     }
     
@@ -291,17 +277,17 @@ public class ArticleService : IArticleService
             if (article == null!)
             {
                 _logger.LogError("Article not found!");
-                return new BaseResponse<ArticleEntity>().BadRequestResponse("Article not found!");
+                return new BaseResponse<ArticleEntity>().ServerResponse("Article not found!", StatusCode.BadRequest);
             }
 
             await _articleRepository.DeleteArticleAsync(article);
 
-            return new BaseResponse<ArticleEntity>().SuccessRequest("Task deleted successfully!");
+            return new BaseResponse<ArticleEntity>().ServerResponse("Task deleted successfully!", StatusCode.Ok);
         }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<ArticleEntity>().InternalServerErrorResponse("Internal server error");
+            return new BaseResponse<ArticleEntity>().ServerResponse("Internal server error", StatusCode.InternalServerError);
         }
     }
 }
