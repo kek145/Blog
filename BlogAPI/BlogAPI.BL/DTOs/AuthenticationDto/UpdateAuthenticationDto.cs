@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BlogAPI.BL.DTOs.AuthenticationDto;
 
-public class EditAuthenticationDto
+public class UpdateAuthenticationDto
 {
     [Required, EmailAddress]
     public string Email { get; set; } = string.Empty;

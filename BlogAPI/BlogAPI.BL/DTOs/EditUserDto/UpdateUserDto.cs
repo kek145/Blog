@@ -2,7 +2,7 @@
 
 namespace BlogAPI.BL.DTOs.EditUserDto;
 
-public class EditUserDto
+public class UpdateUserDto
 {
     [Required, MinLength(2)]
     public string FirstName { get; set; } = string.Empty;
