@@ -61,7 +61,7 @@ public class AccountService : IAccountService
         }
     }
 
-    public async Task<IBaseResponse<IEnumerable<UpdateUserDto>>> UpdateUserInfoAsync(UpdateUserDto updateDto, string token)
+    public async Task<IBaseResponse<UpdateUserDto>> UpdateUserInfoAsync(UpdateUserDto updateDto, string token)
     {
         try
         {
@@ -74,7 +74,7 @@ public class AccountService : IAccountService
             if (user == null!)
             {
                 _logger.LogError("User is not found!");
-                return new BaseResponse<UpdateUserDto>().ServerResponseEnumerable("User is not found!", StatusCode.BadRequest);
+                return new BaseResponse<UpdateUserDto>().ServerResponse("User is not found!", StatusCode.BadRequest);
             }
 
             user.FirstName = updateDto.FirstName;
@@ -83,16 +83,16 @@ public class AccountService : IAccountService
             await _userRepository.UpdateUserAsync(user);
             
             _logger.LogInformation("Update of this user was successful!");
-            return new BaseResponse<UpdateUserDto>().ServerResponseEnumerable("Update of this user was successful!", StatusCode.Ok);
+            return new BaseResponse<UpdateUserDto>().ServerResponse("Update of this user was successful!", StatusCode.Ok);
         }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<UpdateUserDto>().ServerResponseEnumerable("Internal server error", StatusCode.InternalServerError);
+            return new BaseResponse<UpdateUserDto>().ServerResponse("Internal server error", StatusCode.InternalServerError);
         }
     }
 
-    public async Task<IBaseResponse<IEnumerable<UpdateAuthenticationDto>>> UpdateAuthenticationInfoAsync(UpdateAuthenticationDto updateDto, string token)
+    public async Task<IBaseResponse<UpdateAuthenticationDto>> UpdateAuthenticationInfoAsync(UpdateAuthenticationDto updateDto, string token)
     {
         try
         {
@@ -105,13 +105,13 @@ public class AccountService : IAccountService
             if (user == null!)
             {
                 _logger.LogError("User is not found!");
-                return new BaseResponse<UpdateAuthenticationDto>().ServerResponseEnumerable("User is not found!", StatusCode.BadRequest);
+                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("User is not found!", StatusCode.BadRequest);
             }
 
             if (updateDto.Password != updateDto.ConfirmPassword)
             {
                 _logger.LogError("Password mismatch!");
-                return new BaseResponse<UpdateAuthenticationDto>().ServerResponseEnumerable("Password mismatch!", StatusCode.BadRequest);
+                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("Password mismatch!", StatusCode.BadRequest);
             }
             
             PasswordHasher.CreatePasswordHash(updateDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -122,12 +122,12 @@ public class AccountService : IAccountService
             await _userRepository.UpdateUserAsync(user);
             
             _logger.LogInformation("Login details updated successfully!");
-            return new BaseResponse<UpdateAuthenticationDto>().ServerResponseEnumerable("Login details updated successfully!", StatusCode.Ok);
+            return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("Login details updated successfully!", StatusCode.Ok);
         }
         catch (Exception ex)
         {
             _logger.LogError("Internal server error: {ExMessage}", ex.Message);
-            return new BaseResponse<UpdateAuthenticationDto>().ServerResponseEnumerable("Internal server error", StatusCode.InternalServerError);
+            return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("Internal server error", StatusCode.InternalServerError);
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
 using System.Collections.Generic;
+using BlogAPI.DAL.UserRepository;
 using BlogAPI.BL.DTOs.ArticleDTOs;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
@@ -20,6 +22,7 @@ namespace BlogAPI.BL.ArticleService;
 public class ArticleService : IArticleService
 {
     private readonly ILogger<ArticleService> _logger;
+    private readonly IUserRepository _userRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IArticleRepository _articleRepository;
     private readonly ICategoryRepository _categoryRepository;
@@ -27,6 +30,7 @@ public class ArticleService : IArticleService
     private readonly IArticleCategoryRepository _articleCategoryRepository;
 
     public ArticleService(ILogger<ArticleService> logger,
+        IUserRepository userRepository,
         IJwtTokenService jwtTokenService,
         IArticleRepository articleRepository,
         ICategoryRepository categoryRepository,
@@ -34,13 +38,14 @@ public class ArticleService : IArticleService
         IArticleCategoryRepository articleCategoryRepository)
     {
         _logger = logger;
+        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
         _articleRepository = articleRepository;
         _categoryRepository = categoryRepository;
         _userArticleRepository = userArticleRepository;
         _articleCategoryRepository = articleCategoryRepository;
     }
-    
+
     public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleCreateDto articleDto, string token)
     {
         var userId = _jwtTokenService.GetUserIdFromToken(token);
@@ -114,6 +119,49 @@ public class ArticleService : IArticleService
             {
                 Data = articles,
                 StatusCode = StatusCode.Ok,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<ArticleDto>().ServerResponseEnumerable("Internal server error", StatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesByUserAsync(int userId)
+    {
+        try
+        {
+            var user = await _userRepository.FindUserByIdAsync(userId);
+
+            var articles = await _articleRepository.GetAllArticles()
+                .Where(x => x.UserArticle.Any(userArticles => user.UserId == userId))
+                .Select(x =>
+                    new ArticleDto
+                    {
+                        Title = x.Title,
+                        Content = x.Content,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt
+                    })
+                .ToListAsync();
+            
+            if (articles == null!)
+            {
+                _logger.LogError("Article is not found");
+                return new BaseResponse<ArticleDto>().ServerResponseEnumerable("Article is not found!", StatusCode.BadRequest);
+            }
+            
+            if (user == null!)
+            {
+                _logger.LogError("User is not found");
+                return new BaseResponse<ArticleDto>().ServerResponseEnumerable("User is not found!", StatusCode.BadRequest);
+            }
+
+            return new BaseResponse<IEnumerable<ArticleDto>>
+            {
+                Data = articles,
+                StatusCode = StatusCode.Ok
             };
         }
         catch (Exception ex)

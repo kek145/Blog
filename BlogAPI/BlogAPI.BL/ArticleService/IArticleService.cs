@@ -10,6 +10,7 @@ public interface IArticleService
 {
     Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesAsync();
     Task<IBaseResponse<ArticleDto>> GetArticleByIdAsync(int articleId);
+    Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesByUserAsync(int userId);
     Task<IBaseResponse<IEnumerable<ArticleDto>>> GetArticleBySearchAsync(string query);
     Task<IBaseResponse<ArticleEntity>> DeleteArticleAsync(string token, int articleId);
     Task<IBaseResponse<IEnumerable<ArticleDto>>> GetAllArticlesByCategoryAsync(string categoryName);
