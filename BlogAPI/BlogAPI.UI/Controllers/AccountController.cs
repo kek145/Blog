@@ -20,6 +20,14 @@ public class AccountController : ControllerBase
         _accountService = accountService;
     }
 
+    [HttpGet]
+    [Route("GetMyArticles")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Author")]
+    public async Task<IActionResult> GetMyArticles()
+    {
+        return Ok();
+    }
+
     [HttpPut]
     [Route("User-Info")]
     public async Task<IActionResult> EditUserInfo([FromBody] UpdateUserDto request)
