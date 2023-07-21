@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq;
 using BlogAPI.Domain.Enum;
+using BlogAPI.DAL.Interfaces;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
-using BlogAPI.DAL.UserRepository;
 using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.BL.DTOs.AuthenticationDto;
 
@@ -14,14 +16,14 @@ namespace BlogAPI.BL.AccountService;
 
 public class AccountService : IAccountService
 {
-    private readonly IUserRepository _userRepository;
     private readonly ILogger<AccountService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IBaseRepository<UserEntity> _userRepository;
 
-    public AccountService(IUserRepository userRepository, ILogger<AccountService> logger, IJwtTokenService jwtTokenService)
+    public AccountService(ILogger<AccountService> logger, IJwtTokenService jwtTokenService, IBaseRepository<UserEntity> userRepository)
     {
-        _userRepository = userRepository;
         _logger = logger;
+        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
     }
 
@@ -31,7 +33,11 @@ public class AccountService : IAccountService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var user = await _userRepository.FindUserByIdAsync(userId!.Value);
+            if (!userId.HasValue)
+                throw new UnauthorizedAccessException("User is not authorized");
+            var user = await _userRepository.GetAll()
+                .Where(find => find.UserId == userId.Value)
+                .FirstOrDefaultAsync();
 
             if (user == null!)
             {
@@ -39,7 +45,7 @@ public class AccountService : IAccountService
                 return new BaseResponse<UserEntity>().ServerResponse("User is not found!", StatusCode.BadRequest);
             }
             
-            await _userRepository.DeleteUserAsync(user);
+            await _userRepository.DeleteAsync(user);
             return new BaseResponse<UserEntity>().ServerResponse("Account successfully deleted!", StatusCode.Ok);
         }
         catch (Exception ex)
@@ -54,10 +60,13 @@ public class AccountService : IAccountService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var user = await _userRepository.FindUserByIdAsync(userId!.Value);
             
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
+            
+            var user = await _userRepository.GetAll()
+                .Where(find => find.UserId == userId.Value)
+                .FirstOrDefaultAsync();
 
             if (user == null!)
             {
@@ -68,7 +77,7 @@ public class AccountService : IAccountService
             user.FirstName = updateDto.FirstName;
             user.LastName = updateDto.LastName;
 
-            await _userRepository.UpdateUserAsync(user);
+            await _userRepository.UpdateAsync(user);
             
             _logger.LogInformation("Update of this user was successful!");
             return new BaseResponse<UpdateUserDto>().ServerResponse("Update of this user was successful!", StatusCode.Ok);
@@ -85,10 +94,13 @@ public class AccountService : IAccountService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var user = await _userRepository.FindUserByIdAsync(userId!.Value);
-            
+
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article!");
+            
+            var user = await _userRepository.GetAll()
+                .Where(find => find.UserId == userId.Value)
+                .FirstOrDefaultAsync();
             
             if (user == null!)
             {
@@ -107,7 +119,7 @@ public class AccountService : IAccountService
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _userRepository.UpdateUserAsync(user);
+            await _userRepository.UpdateAsync(user);
             
             _logger.LogInformation("Login details updated successfully!");
             return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("Login details updated successfully!", StatusCode.Ok);

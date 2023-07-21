@@ -1,39 +1,48 @@
 ﻿using System;
+using System.Linq;
+using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
-using BlogAPI.BL.DTOs.RegistrationDto;
+using BlogAPI.DAL.Interfaces;
 using BlogAPI.Domain.Response;
-using BlogAPI.DAL.RoleRepository;
-using BlogAPI.DAL.UserRepository;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
-using BlogAPI.DAL.UserRoleRepository;
+using Microsoft.EntityFrameworkCore;
+using BlogAPI.BL.DTOs.RegistrationDto;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.Domain.Enum;
 
 namespace BlogAPI.BL.RegistrationService;
 
 public class RegistrationService : IRegistrationService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IRoleRepository _roleRepository;
     private readonly ILogger<RegistrationService> _logger;
-    private readonly IUserRoleRepository _userRoleRepository;
+    private readonly IBaseRepository<RoleEntity> _roleRepository;
+    private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IBaseRepository<UserRoleEntity> _userRoleRepository;
 
-    public RegistrationService(IUserRepository userRepository, IRoleRepository roleRepository, ILogger<RegistrationService> logger, IUserRoleRepository userRoleRepository)
+    public RegistrationService(ILogger<RegistrationService> logger,
+        IBaseRepository<RoleEntity> roleRepository,
+        IBaseRepository<UserEntity> userRepository,
+        IBaseRepository<UserRoleEntity> userRoleRepository)
     {
         _logger = logger;
-        _userRepository = userRepository;
         _roleRepository = roleRepository;
+        _userRepository = userRepository;
         _userRoleRepository = userRoleRepository;
     }
+
 
     public async Task<IBaseResponse<UserEntity>> RegistrationServiceAsync(RegistrationDto registrationDto)
     {
         try
         {
-            var user = await _userRepository.FindUserByEmailAsync(registrationDto.Email);
-            var role = await _roleRepository.FindRoleByNameAsync(registrationDto.RoleName);
+            var user = await _userRepository.GetAll()
+                .Where(find => find.Email == registrationDto.Email)
+                .FirstOrDefaultAsync();
+            
+            var role = await _roleRepository.GetAll()
+                .Where(find => find.RoleName == registrationDto.Role)
+                .FirstOrDefaultAsync();
 
             if (user != null!)
             {
@@ -53,7 +62,7 @@ public class RegistrationService : IRegistrationService
                 return new BaseResponse<UserEntity>().ServerResponse("Password mismatch!", StatusCode.BadRequest);
             }
 
-            PasswordHasher.CreatePasswordHash(registrationDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            PasswordHasher.CreatePasswordHash(registrationDto.Password, out var passwordHash, out var passwordSalt);
             var userEntity = new UserEntity
             {
                 FirstName = registrationDto.FirstName,
@@ -69,8 +78,8 @@ public class RegistrationService : IRegistrationService
                 Role = role
             };
 
-            await _userRepository.AddUserAsync(userEntity);
-            await _userRoleRepository.AddUserRoleAsync(userRoleEntity);
+            await _userRepository.AddAsync(userEntity);
+            await _userRoleRepository.AddAsync(userRoleEntity);
             
             _logger.LogInformation("Registration completed successfully!");
             return new BaseResponse<UserEntity>().ServerResponse("Registration completed successfully!", StatusCode.Ok);

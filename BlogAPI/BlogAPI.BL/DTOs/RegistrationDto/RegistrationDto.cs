@@ -15,5 +15,5 @@ public class RegistrationDto
     [Required, MinLength(6)]
     public string ConfirmPassword { get; set; } = string.Empty;
     [Required, MinLength(4)]
-    public string RoleName { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
 }

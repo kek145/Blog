@@ -5,40 +5,36 @@ using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
 using System.Collections.Generic;
-using BlogAPI.DAL.UserRepository;
 using BlogAPI.BL.DTOs.ArticleDTOs;
+using BlogAPI.DAL.Interfaces;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
-using BlogAPI.DAL.ArticleRepository;
-using Microsoft.EntityFrameworkCore;
-using BlogAPI.DAL.CategoryRepository;
 using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.DAL.UserArticleRepository;
-using BlogAPI.DAL.ArticleCategoryRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.BL.ArticleService;
 
 public class ArticleService : IArticleService
 {
     private readonly ILogger<ArticleService> _logger;
-    private readonly IUserRepository _userRepository;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IArticleRepository _articleRepository;
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IUserArticleRepository _userArticleRepository;
-    private readonly IArticleCategoryRepository _articleCategoryRepository;
+    private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IBaseRepository<ArticleEntity> _articleRepository;
+    private readonly IBaseRepository<CategoryEntity> _categoryRepository;
+    private readonly IBaseRepository<UserArticleEntity> _userArticleRepository;
+    private readonly IBaseRepository<ArticleCategoryEntity> _articleCategoryRepository;
 
     public ArticleService(ILogger<ArticleService> logger,
-        IUserRepository userRepository,
         IJwtTokenService jwtTokenService,
-        IArticleRepository articleRepository,
-        ICategoryRepository categoryRepository,
-        IUserArticleRepository userArticleRepository,
-        IArticleCategoryRepository articleCategoryRepository)
+        IBaseRepository<UserEntity> userRepository,
+        IBaseRepository<ArticleEntity> articleRepository,
+        IBaseRepository<CategoryEntity> categoryRepository,
+        IBaseRepository<UserArticleEntity> userArticleRepository,
+        IBaseRepository<ArticleCategoryEntity> articleCategoryRepository)
     {
         _logger = logger;
-        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
+        _userRepository = userRepository;
         _articleRepository = articleRepository;
         _categoryRepository = categoryRepository;
         _userArticleRepository = userArticleRepository;
@@ -48,8 +44,13 @@ public class ArticleService : IArticleService
     public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleCreateDto articleDto, string token)
     {
         var userId = _jwtTokenService.GetUserIdFromToken(token);
-        var category = await _categoryRepository.FindCategoryByNameAsync(articleDto.CategoryName);
-        var title = await _articleRepository.FindArticleByTitleAsync(articleDto.Title);
+        var category = await _categoryRepository.GetAll()
+            .Where(find => find.CategoryName == articleDto.Category)
+            .FirstOrDefaultAsync();
+        var title = await _articleRepository.GetAll()
+            .Where(find => find.Title == articleDto.Title)
+            .FirstOrDefaultAsync();
+        
         try
         {
             if (!userId.HasValue)
@@ -86,9 +87,9 @@ public class ArticleService : IArticleService
                 Category = category
             };
 
-            await _articleRepository.AddArticleAsync(article);
-            await _userArticleRepository.AddUserArticleAsync(userArticle);
-            await _articleCategoryRepository.AddArticleCategoryAsync(articleCategory);
+            await _articleRepository.AddAsync(article);
+            await _userArticleRepository.AddAsync(userArticle);
+            await _articleCategoryRepository.AddAsync(articleCategory);
 
                 _logger.LogInformation("The article has been successfully created!");
             return new BaseResponse<ArticleEntity>().ServerResponse("The article has been successfully created!", StatusCode.Ok);
@@ -104,7 +105,7 @@ public class ArticleService : IArticleService
     {
         try
         {
-            var articles = await _articleRepository.GetAllArticles()
+            var articles = await _articleRepository.GetAll()
                 .Select(x =>
                     new ArticleDto
                     {
@@ -131,9 +132,17 @@ public class ArticleService : IArticleService
     {
         try
         {
-            var user = await _userRepository.FindUserByIdAsync(userId);
+            var user = await _userRepository.GetAll()
+                .Where(find => find.UserId == userId)
+                .FirstOrDefaultAsync();
 
-            var articles = await _articleRepository.GetAllArticles()
+            if (user == null)
+            {
+                _logger.LogError("User is not found");
+                return new BaseResponse<ArticleDto>().ServerResponseEnumerable("User is not found!", StatusCode.BadRequest);
+            }
+
+            var articles = await _articleRepository.GetAll()
                 .Where(x => x.UserArticle.Any(userArticles => user.UserId == userId))
                 .Select(x =>
                     new ArticleDto
@@ -149,12 +158,6 @@ public class ArticleService : IArticleService
             {
                 _logger.LogError("Article is not found");
                 return new BaseResponse<ArticleDto>().ServerResponseEnumerable("Article is not found!", StatusCode.BadRequest);
-            }
-            
-            if (user == null!)
-            {
-                _logger.LogError("User is not found");
-                return new BaseResponse<ArticleDto>().ServerResponseEnumerable("User is not found!", StatusCode.BadRequest);
             }
 
             return new BaseResponse<IEnumerable<ArticleDto>>
@@ -174,7 +177,7 @@ public class ArticleService : IArticleService
     {
         try
         {
-            var articles = await _articleRepository.GetAllArticles()
+            var articles = await _articleRepository.GetAll()
                 .Where(x => x.Title.Contains(query) || x.Content.Contains(query))
                 .Select(x =>
                     new ArticleDto
@@ -206,7 +209,7 @@ public class ArticleService : IArticleService
     {
         try
         {
-            var article = await _articleRepository.GetAllArticles()
+            var article = await _articleRepository.GetAll()
                 .Where(find => find.ArticleId == articleId)
                 .Select(x =>
                     new ArticleDto
@@ -242,7 +245,7 @@ public class ArticleService : IArticleService
     {
         try
         {
-            var articles = await _articleRepository.GetAllArticles()
+            var articles = await _articleRepository.GetAll()
                 .Where(article => article.ArticleCategory
                     .Any(articleCategory => articleCategory.Category.CategoryName == categoryName))
                 .Select(x => 
@@ -278,8 +281,12 @@ public class ArticleService : IArticleService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.FindArticleByIdAsync(articleId);
-            var title = await _articleRepository.FindArticleByTitleAsync(articleDto.Title);
+            var article = await _articleRepository.GetAll()
+                .Where(find => find.ArticleId == articleId)
+                .FirstOrDefaultAsync();
+            var title = await _articleRepository.GetAll()
+                .Where(find => find.Title == articleDto.Title)
+                .FirstOrDefaultAsync();
 
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
@@ -300,7 +307,7 @@ public class ArticleService : IArticleService
             article.Content = articleDto.Content;
             article.UpdatedAt = articleDto.UpdatedAt;
 
-            await _articleRepository.UpdateArticleAsync(article);
+            await _articleRepository.UpdateAsync(article);
 
             _logger.LogInformation("Article successfully updated!");
             return new BaseResponse<ArticleEntity>().ServerResponse("Article successfully updated!", StatusCode.Ok);
@@ -317,7 +324,9 @@ public class ArticleService : IArticleService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.FindArticleByIdAsync(articleId);
+            var article = await _articleRepository.GetAll()
+                .Where(find => find.ArticleId == articleId)
+                .FirstOrDefaultAsync();
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
             
@@ -327,7 +336,7 @@ public class ArticleService : IArticleService
                 return new BaseResponse<ArticleEntity>().ServerResponse("Article not found!", StatusCode.BadRequest);
             }
 
-            await _articleRepository.DeleteArticleAsync(article);
+            await _articleRepository.DeleteAsync(article);
 
             return new BaseResponse<ArticleEntity>().ServerResponse("Task deleted successfully!", StatusCode.Ok);
         }

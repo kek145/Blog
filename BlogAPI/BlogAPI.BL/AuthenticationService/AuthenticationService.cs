@@ -3,14 +3,16 @@ using System.Text;
 using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BlogAPI.DAL.RoleRepository;
-using BlogAPI.DAL.UserRepository;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.BL.DTOs.AuthenticationDto;
+using BlogAPI.DAL.Interfaces;
+using BlogAPI.Domain.Entity.Connection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace BlogAPI.BL.AuthenticationService;
@@ -18,22 +20,30 @@ namespace BlogAPI.BL.AuthenticationService;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly IConfiguration _configuration;
-    private readonly IUserRepository _userRepository;
-    private readonly IRoleRepository _roleRepository;
     private readonly ILogger<AuthenticationService> _logger;
+    private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IBaseRepository<UserRoleEntity> _userRoleRepository;
 
-    public AuthenticationService(IConfiguration configuration, IUserRepository userRepository, IRoleRepository roleRepository, ILogger<AuthenticationService> logger)
+    public AuthenticationService(IConfiguration configuration,
+        ILogger<AuthenticationService> logger,
+        IBaseRepository<UserEntity> userRepository,
+        IBaseRepository<UserRoleEntity> userRoleRepository)
     {
         _logger = logger;
         _configuration = configuration;
         _userRepository = userRepository;
-        _roleRepository = roleRepository;
+        _userRoleRepository = userRoleRepository;
     }
+
 
     public async Task<string> AuthenticationAsync(AuthenticationDto authenticationDto)
     {
-        var user = await _userRepository.FindUserByEmailAsync(authenticationDto.Email);
-        var role = await _roleRepository.FindRolesByUserIdAsync(user.UserId);
+        var user = await _userRepository.GetAll()
+            .Where(find => find.Email == authenticationDto.Email)
+            .FirstOrDefaultAsync();
+        var role = await _userRoleRepository.GetAll()
+            .Where(find => find.UserId == user!.UserId)
+            .FirstOrDefaultAsync();
 
         if (user == null! || role == null!)
         {
@@ -46,8 +56,8 @@ public class AuthenticationService : IAuthenticationService
             _logger.LogError("Incorrect password!");
             return null!;
         }
-
-        var token = GenerateJwtToken(user, role);
+        
+        var token = GenerateJwtToken(user, role.Role.RoleName);
         return token;
     }
 

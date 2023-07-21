@@ -2,18 +2,15 @@
 using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
+using BlogAPI.DAL.Interfaces;
 using BlogAPI.Domain.Response;
 using System.Collections.Generic;
 using BlogAPI.BL.JwtTokenService;
 using BlogAPI.Domain.Entity.Table;
 using BlogAPI.BL.DTOs.CommentDTOs;
 using Microsoft.Extensions.Logging;
-using BlogAPI.DAL.ArticleRepository;
-using BlogAPI.DAL.CommentRepository;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.DAL.UserCommentRepository;
-using BlogAPI.DAL.ArticleCommentRepository;
 
 namespace BlogAPI.BL.CommentService;
 
@@ -21,17 +18,17 @@ public class CommentService : ICommentService
 {
     private readonly ILogger<CommentService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IArticleRepository _articleRepository;
-    private readonly ICommentRepository _commentRepository;
-    private readonly IUserCommentRepository _userCommentRepository;
-    private readonly IArticleCommentRepository _articleCommentRepository;
+    private readonly IBaseRepository<ArticleEntity> _articleRepository;
+    private readonly IBaseRepository<CommentEntity> _commentRepository;
+    private readonly IBaseRepository<UserCommentEntity> _userCommentRepository;
+    private readonly IBaseRepository<ArticleCommentEntity> _articleCommentRepository;
 
     public CommentService(ILogger<CommentService> logger,
         IJwtTokenService jwtTokenService,
-        IArticleRepository articleRepository,
-        ICommentRepository commentRepository,
-        IUserCommentRepository userCommentRepository,
-        IArticleCommentRepository articleCommentRepository)
+        IBaseRepository<ArticleEntity> articleRepository,
+        IBaseRepository<CommentEntity> commentRepository,
+        IBaseRepository<UserCommentEntity> userCommentRepository,
+        IBaseRepository<ArticleCommentEntity> articleCommentRepository)
     {
         _logger = logger;
         _jwtTokenService = jwtTokenService;
@@ -44,7 +41,7 @@ public class CommentService : ICommentService
     {
         try
         {
-            var comments = await _commentRepository.GetAllComments()
+            var comments = await _commentRepository.GetAll()
                 .Where(x => x.ArticleComment
                     .Any(articleComments => articleComments.ArticleId == articleId))
                 .Select(comment =>
@@ -74,8 +71,10 @@ public class CommentService : ICommentService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.FindArticleByIdAsync(articleId);
-            var comment = await _commentRepository.GetAllComments()
+            var article = await _articleRepository.GetAll()
+                .Where(find => find.ArticleId == articleId)
+                .FirstOrDefaultAsync();
+            var comment = await _commentRepository.GetAll()
                 .Where(c => c.CommentId == commentId && c.ArticleComment
                     .Any(articleComments => articleComments.ArticleId == articleId))
                 .FirstOrDefaultAsync();
@@ -95,7 +94,7 @@ public class CommentService : ICommentService
                 return new BaseResponse<CommentDto>().ServerResponse("Comment is not found", StatusCode.BadRequest);
             }
 
-            await _commentRepository.DeleteCommentAsync(comment);
+            await _commentRepository.DeleteAsync(comment);
             return new BaseResponse<CommentDto>().ServerResponse("Comment successfully deleted!", StatusCode.Ok);
         }
         catch (Exception ex)
@@ -110,7 +109,9 @@ public class CommentService : ICommentService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.FindArticleByIdAsync(articleId);
+            var article = await _articleRepository.GetAll()
+                .Where(find => find.ArticleId == articleId)
+                .FirstOrDefaultAsync();
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
 
@@ -138,9 +139,9 @@ public class CommentService : ICommentService
                 Comment = comment
             };
 
-            await _commentRepository.AddCommentAsync(comment);
-            await _userCommentRepository.AddUserCommentAsync(userComment);
-            await _articleCommentRepository.AddArticleCommentAsync(articleComment);
+            await _commentRepository.AddAsync(comment);
+            await _userCommentRepository.AddAsync(userComment);
+            await _articleCommentRepository.AddAsync(articleComment);
 
             _logger.LogInformation("Comment delivered successfully!");
             return new BaseResponse<CommentAddDto>().ServerResponse("Comment delivered successfully!", StatusCode.Ok);
@@ -157,9 +158,11 @@ public class CommentService : ICommentService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.FindArticleByIdAsync(articleId);
+            var article = await _articleRepository.GetAll()
+                .Where(find => find.ArticleId == articleId)
+                .FirstOrDefaultAsync();
 
-            var comment = await _commentRepository.GetAllComments()
+            var comment = await _commentRepository.GetAll()
                 .Where(c => c.CommentId == commentId && c.ArticleComment.Any(articleComments => articleComments.ArticleId == articleId))
                 .FirstOrDefaultAsync();
 
@@ -181,7 +184,7 @@ public class CommentService : ICommentService
             comment.Comment = commentDto.Comment;
             comment.UpdatedAt = commentDto.UpdatedAt;
 
-            await _commentRepository.UpdateCommentAsync(comment);
+            await _commentRepository.UpdateAsync(comment);
             
             _logger.LogInformation("Comment successfully updated!");
             return new BaseResponse<CommentUpdateDto>().ServerResponse("Comment successfully updated!", StatusCode.Ok);
