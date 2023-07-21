@@ -27,16 +27,13 @@ public class ArticleController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Author")]
     public async Task<IActionResult> CreateArticle([FromBody] ArticleCreateDto request)
     {
-        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.CreateNewArticleAsync(request, token);
 
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
             return BadRequest(new { response.Description });
 
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { response.Description });
-
-        return Ok(new { response.Description });
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { response.Description }) : Ok(new { response.Description });
     }
 
     [HttpPost]
@@ -44,7 +41,13 @@ public class ArticleController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     public async Task<IActionResult> AddComment([FromBody] CommentAddDto request, int articleId)
     {
-        return Ok();
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _commentService.AddCommentAsync(request, token, articleId);
+        
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { response.Description });
+
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { response.Description }) : Ok(new { response.Description });
     }
 
     [HttpGet]
@@ -63,10 +66,7 @@ public class ArticleController : ControllerBase
     public async Task<IActionResult> GetAllArticlesBySearch(string query)
     {
         var response = await _articleService.GetArticleBySearchAsync(query);
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-
-        return Ok(new { response.Data });
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Data });
     }
     
     [HttpGet]
@@ -90,17 +90,16 @@ public class ArticleController : ControllerBase
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
             return BadRequest(new { error = response.Description });
         
-        if(response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-
-        return Ok(new { response.Data });
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Data });
     }
 
     [HttpGet]
     [Route("GetArticleById/{articleId:int}/Comments")]
-    public async Task<IActionResult> GetAllComments()
+    public async Task<IActionResult> GetAllComments(int articleId)
     {
-        return Ok();
+        var response = await _commentService.GetAllCommentsByArticleAsync(articleId);
+        
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Data });
     }
 
     [HttpPut]
@@ -113,18 +112,22 @@ public class ArticleController : ControllerBase
 
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
             return BadRequest(new { error = response.Description });
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-
-        return Ok(new { response.Description });
+        
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
     }
 
     [HttpPut]
     [Route("UpdateArticle/{articleId:int}/Comment/{commentId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
-    public async Task<IActionResult> UpdateComment()
+    public async Task<IActionResult> UpdateComment([FromBody] CommentUpdateDto request, int articleId, int commentId)
     {
-        return Ok();
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _commentService.UpdateCommentAsync(request, token, articleId, commentId);
+        
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { error = response.Description });
+        
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
     }
 
 
@@ -133,22 +136,26 @@ public class ArticleController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
     public async Task<IActionResult> DeleteArticle(int articleId)
     {
-        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.DeleteArticleAsync(token, articleId);
 
         if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
             return BadRequest(new { response.Description });
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-
-        return Ok(new { response.Description });
+        
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
     }
 
     [HttpDelete]
     [Route("Article/{articleId:int}/Comment/{commentId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
-    public async Task<IActionResult> DeleteComment()
+    public async Task<IActionResult> DeleteComment(int articleId, int commentId)
     {
-        return Ok();
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _commentService.DeleteCommentAsync(token, articleId, commentId);
+        
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { response.Description });
+        
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
     }
 }
