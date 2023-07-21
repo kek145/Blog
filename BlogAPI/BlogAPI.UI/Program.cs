@@ -1,29 +1,23 @@
 using System;
 using System.Text;
 using BlogAPI.DAL.Core;
+using BlogAPI.DAL.Interfaces;
 using Microsoft.OpenApi.Models;
+using BlogAPI.DAL.Repositories;
 using BlogAPI.BL.ArticleService;
 using BlogAPI.BL.AccountService;
 using BlogAPI.BL.CommentService;
 using BlogAPI.BL.JwtTokenService;
-using BlogAPI.DAL.RoleRepository;
-using BlogAPI.DAL.UserRepository;
+using BlogAPI.Domain.Entity.Table;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using BlogAPI.DAL.ArticleRepository;
-using BlogAPI.DAL.CommentRepository;
-using BlogAPI.DAL.UserRoleRepository;
-using BlogAPI.BL.RegistrationService;
 using Microsoft.IdentityModel.Tokens;
+using BlogAPI.BL.RegistrationService;
 using Swashbuckle.AspNetCore.Filters;
-using BlogAPI.DAL.CategoryRepository;
 using BlogAPI.BL.AuthenticationService;
-using BlogAPI.DAL.UserCommentRepository;
-using BlogAPI.DAL.UserArticleRepository;
+using BlogAPI.Domain.Entity.Connection;
 using Microsoft.Extensions.Configuration;
-using BlogAPI.DAL.ArticleCommentRepository;
-using BlogAPI.DAL.ArticleCategoryRepository;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -48,23 +42,22 @@ var tokenValidationParameter = new TokenValidationParameters
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IBaseRepository<UserEntity>, UserRepository>();
+builder.Services.AddScoped<IBaseRepository<RoleEntity>, RoleRepository>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserArticleRepository, UserArticleRepository>();
-builder.Services.AddScoped<IUserCommentRepository, UserCommentRepository>();
-builder.Services.AddScoped<IArticleCommentRepository, ArticleCommentRepository>();
-builder.Services.AddScoped<IArticleCategoryRepository, ArticleCategoryRepository>();
+builder.Services.AddScoped<IBaseRepository<ArticleEntity>, ArticleRepository>();
+builder.Services.AddScoped<IBaseRepository<CommentEntity>, CommentRepository>();
+builder.Services.AddScoped<IBaseRepository<CategoryEntity>, CategoryRepository>();
+builder.Services.AddScoped<IBaseRepository<UserRoleEntity>, UserRoleRepository>();
+builder.Services.AddScoped<IBaseRepository<UserArticleEntity>, UserArticleRepository>();
+builder.Services.AddScoped<IBaseRepository<UserCommentEntity>, UserCommentRepository>();
+builder.Services.AddScoped<IBaseRepository<ArticleCommentEntity>, ArticleCommentRepository>();
+builder.Services.AddScoped<IBaseRepository<ArticleCategoryEntity>, ArticleCategoryRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

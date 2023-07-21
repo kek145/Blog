@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
 using BlogAPI.DAL.UserRepository;
-using System.Collections.Generic;
 using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using BlogAPI.DAL.ArticleRepository;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.BL.DTOs.AuthenticationDto;
 
@@ -21,14 +17,12 @@ public class AccountService : IAccountService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<AccountService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IArticleRepository _articleRepository;
 
-    public AccountService(IUserRepository userRepository, ILogger<AccountService> logger, IJwtTokenService jwtTokenService, IArticleRepository articleRepository)
+    public AccountService(IUserRepository userRepository, ILogger<AccountService> logger, IJwtTokenService jwtTokenService)
     {
         _userRepository = userRepository;
         _logger = logger;
         _jwtTokenService = jwtTokenService;
-        _articleRepository = articleRepository;
     }
 
 
@@ -39,18 +33,12 @@ public class AccountService : IAccountService
             var userId = _jwtTokenService.GetUserIdFromToken(token);
             var user = await _userRepository.FindUserByIdAsync(userId!.Value);
 
-            var article = await _articleRepository.GetAllArticles()
-                .Where(x => x.UserArticle
-                    .Any(userArticles => user.UserId == userId)).FirstOrDefaultAsync();
-
-            await _articleRepository.DeleteArticleAsync(article!);
-            
             if (user == null!)
             {
                 _logger.LogError("User is not found!");
                 return new BaseResponse<UserEntity>().ServerResponse("User is not found!", StatusCode.BadRequest);
             }
-
+            
             await _userRepository.DeleteUserAsync(user);
             return new BaseResponse<UserEntity>().ServerResponse("Account successfully deleted!", StatusCode.Ok);
         }

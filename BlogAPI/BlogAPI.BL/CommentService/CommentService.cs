@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using System.Collections.Generic;
-using System.Linq;
-using BlogAPI.DAL.UserRepository;
-using BlogAPI.BL.DTOs.CommentDTOs;
 using BlogAPI.BL.JwtTokenService;
+using BlogAPI.Domain.Entity.Table;
+using BlogAPI.BL.DTOs.CommentDTOs;
 using Microsoft.Extensions.Logging;
 using BlogAPI.DAL.ArticleRepository;
 using BlogAPI.DAL.CommentRepository;
+using Microsoft.EntityFrameworkCore;
+using BlogAPI.Domain.Entity.Connection;
 using BlogAPI.DAL.UserCommentRepository;
 using BlogAPI.DAL.ArticleCommentRepository;
-using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.Domain.Entity.Table;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.BL.CommentService;
 
@@ -75,9 +74,11 @@ public class CommentService : ICommentService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = _articleRepository.FindArticleByIdAsync(articleId);
+            var article = await _articleRepository.FindArticleByIdAsync(articleId);
             var comment = await _commentRepository.GetAllComments()
-                .Where(comment => comment.CommentId == commentId).FirstOrDefaultAsync();
+                .Where(c => c.CommentId == commentId && c.ArticleComment
+                    .Any(articleComments => articleComments.ArticleId == articleId))
+                .FirstOrDefaultAsync();
             
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
@@ -109,7 +110,7 @@ public class CommentService : ICommentService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = _articleRepository.FindArticleByIdAsync(articleId);
+            var article = await _articleRepository.FindArticleByIdAsync(articleId);
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
 
@@ -157,10 +158,11 @@ public class CommentService : ICommentService
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
             var article = await _articleRepository.FindArticleByIdAsync(articleId);
+
             var comment = await _commentRepository.GetAllComments()
-                .Where(c => c.CommentId == commentId)
+                .Where(c => c.CommentId == commentId && c.ArticleComment.Any(articleComments => articleComments.ArticleId == articleId))
                 .FirstOrDefaultAsync();
-            
+
             if (!userId.HasValue)
                 throw new UnauthorizedAccessException("User is not authorized to update this article");
             
