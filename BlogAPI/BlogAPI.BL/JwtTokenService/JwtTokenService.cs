@@ -29,13 +29,14 @@ public class JwtTokenService : IJwtTokenService
             ValidateAudience = true,
             ValidAudience = _configuration.GetSection("JWTConfiguration:Audience").Value,
             ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWTConfiguration:SecretKey").Value!)),
             ValidateIssuerSigningKey = true
         };
 
         try
         {
-            var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+            var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out _);
         
             var userIdClaim = claimsPrincipal.FindFirst("userid");
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))

@@ -84,10 +84,10 @@ public class RegistrationService : IRegistrationService
             _logger.LogInformation("Registration completed successfully!");
             return new BaseResponse<UserEntity>().ServerResponse("Registration completed successfully!", StatusCode.Created);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _logger.LogError("Some problems with the repositories or the service itself!");
-            return new BaseResponse<UserEntity>().ServerResponse("Some problems with the repositories or the service itself!", StatusCode.InternalServerError);
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<UserEntity>().ServerResponse("Internal server error!", StatusCode.InternalServerError);
         }
     }
 }

@@ -12,6 +12,8 @@ using BlogAPI.Security.HashDataHelper;
 using BlogAPI.BL.DTOs.AuthenticationDto;
 using BlogAPI.DAL.Interfaces;
 using BlogAPI.Domain.Entity.Connection;
+using BlogAPI.Domain.Enum;
+using BlogAPI.Domain.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -36,29 +38,42 @@ public class AuthenticationService : IAuthenticationService
     }
 
 
-    public async Task<string> AuthenticationAsync(AuthenticationDto authenticationDto)
+    public async Task<IBaseResponse<string>> AuthenticationAsync(AuthenticationDto authenticationDto)
     {
-        var user = await _userRepository.GetAll()
-            .Where(find => find.Email == authenticationDto.Email)
-            .FirstOrDefaultAsync();
-        var role = await _userRoleRepository.GetAll()
-            .Where(find => find.UserId == user!.UserId)
-            .FirstOrDefaultAsync();
-
-        if (user == null! || role == null!)
+        try
         {
-            _logger.LogError("No user found with this email or role!");
-            return null!;
-        }
-
-        if (!PasswordHasher.VerifyPasswordHash(authenticationDto.Password, user.PasswordHash, user.PasswordSalt))
-        {
-            _logger.LogError("Incorrect password!");
-            return null!;
-        }
+            var user = await _userRepository.GetAll()
+                .Where(find => find.Email == authenticationDto.Email)
+                .FirstOrDefaultAsync();
+            var role = await _userRoleRepository.GetAll()
+                .Where(find => find.UserId == user!.UserId)
+                .FirstOrDefaultAsync();
         
-        var token = GenerateJwtToken(user, role.Role.RoleName);
-        return token;
+
+            if (role == null)
+            {
+                _logger.LogError("");
+                return new BaseResponse<string>().ServerResponse("User with this role not found", StatusCode.Unauthorized);
+            }
+
+            if (user == null! || !PasswordHasher.VerifyPasswordHash(authenticationDto.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                _logger.LogError("Invalid email or password");
+                return new BaseResponse<string>().ServerResponse("Invalid email or password!", StatusCode.Unauthorized);
+            }
+        
+            var token = GenerateJwtToken(user, role.Role.RoleName);
+            return new BaseResponse<string>
+            {
+                Data = token,
+                StatusCode = StatusCode.Ok
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<string>().ServerResponse("Internal server error!", StatusCode.InternalServerError);
+        }
     }
 
     private string GenerateJwtToken(UserEntity user, string role)

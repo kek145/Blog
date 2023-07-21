@@ -25,10 +25,12 @@ public class AuthenticationController : ControllerBase
         {
             var response = await _authenticationService.AuthenticationAsync(request);
 
-            if (response == null!)
-                return BadRequest(new { error = "Wrong email or password!" });
-
-            return Ok(new { token = response });
+            return response.StatusCode switch
+            {
+                Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+                Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+                _ => Ok(new { token = response.Data })
+            };
         }
         catch (Exception)
         {
