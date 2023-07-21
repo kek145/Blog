@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
