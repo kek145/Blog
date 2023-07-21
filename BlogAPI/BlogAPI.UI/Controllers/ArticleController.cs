@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.ArticleService;
+using BlogAPI.BL.CommentService;
 using BlogAPI.BL.DTOs.ArticleDTOs;
+using BlogAPI.BL.DTOs.CommentDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -12,10 +14,12 @@ namespace BlogAPI.UI.Controllers;
 public class ArticleController : ControllerBase
 {
     private readonly IArticleService _articleService;
+    private readonly ICommentService _commentService;
 
-    public ArticleController(IArticleService articleService)
+    public ArticleController(IArticleService articleService, ICommentService commentService)
     {
         _articleService = articleService;
+        _commentService = commentService;
     }
 
     [HttpPost]
@@ -38,7 +42,7 @@ public class ArticleController : ControllerBase
     [HttpPost]
     [Route("Article/{articleId:int}/AddComment")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
-    public async Task<IActionResult> AddComment()
+    public async Task<IActionResult> AddComment([FromBody] CommentAddDto request, int articleId)
     {
         return Ok();
     }
