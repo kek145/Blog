@@ -35,6 +35,14 @@ public class ArticleController : ControllerBase
         return Ok(new { response.Description });
     }
 
+    [HttpPost]
+    [Route("Article/{articleId:int}/AddComment")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+    public async Task<IActionResult> AddComment()
+    {
+        return Ok();
+    }
+
     [HttpGet]
     [Route("AllArticles")]
     public async Task<IActionResult> GetAllArticles()
@@ -46,6 +54,29 @@ public class ArticleController : ControllerBase
         return Ok(new { response.Data });
     }
 
+    [HttpGet]
+    [Route("GetAllArticle/{query}")]
+    public async Task<IActionResult> GetAllArticlesBySearch(string query)
+    {
+        var response = await _articleService.GetArticleBySearchAsync(query);
+        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
+            return StatusCode(500, new { error = response.Description });
+
+        return Ok(new { response.Data });
+    }
+    
+    [HttpGet]
+    [Route("GetArticleById/{articleId:int}")]
+    public async Task<IActionResult> GetArticleById(int articleId)
+    {
+        var response = await _articleService.GetArticleByIdAsync(articleId);
+
+        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
+            return BadRequest(new { error = response.Description });
+
+        return Ok(new { response.Data });
+    }
+    
     [HttpGet]
     [Route("GetAllArticlesByCategory/{category}")]
     public async Task<IActionResult> GetAllArticlesByCategory(string category)
@@ -62,26 +93,10 @@ public class ArticleController : ControllerBase
     }
 
     [HttpGet]
-    [Route("GetArticleById/{articleId:int}")]
-    public async Task<IActionResult> GetArticleById(int articleId)
+    [Route("GetArticleById/{articleId:int}/Comments")]
+    public async Task<IActionResult> GetAllComments()
     {
-        var response = await _articleService.GetArticleByIdAsync(articleId);
-
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-
-        return Ok(new { response.Data });
-    }
-
-    [HttpGet]
-    [Route("GetAllArticle/{query}")]
-    public async Task<IActionResult> GetAllArticlesBySearch(string query)
-    {
-        var response = await _articleService.GetArticleBySearchAsync(query);
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-
-        return Ok(new { response.Data });
+        return Ok();
     }
 
     [HttpPut]
@@ -100,6 +115,15 @@ public class ArticleController : ControllerBase
         return Ok(new { response.Description });
     }
 
+    [HttpPut]
+    [Route("UpdateArticle/{articleId:int}/Comment/{commentId:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+    public async Task<IActionResult> UpdateComment()
+    {
+        return Ok();
+    }
+
+
     [HttpDelete]
     [Route("DeleteArticle/{articleId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author")]
@@ -114,5 +138,13 @@ public class ArticleController : ControllerBase
             return StatusCode(500, new { error = response.Description });
 
         return Ok(new { response.Description });
+    }
+
+    [HttpDelete]
+    [Route("Article/{articleId:int}/Comment/{commentId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
+    public async Task<IActionResult> DeleteComment()
+    {
+        return Ok();
     }
 }
