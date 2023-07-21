@@ -19,44 +19,50 @@ public class ArticleService : IArticleService
     private readonly ILogger<ArticleService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IBaseRepository<CommentEntity> _commentRepository;
     private readonly IBaseRepository<ArticleEntity> _articleRepository;
     private readonly IBaseRepository<CategoryEntity> _categoryRepository;
+    private readonly IBaseRepository<UserCommentEntity> _userCommentRepository;
     private readonly IBaseRepository<UserArticleEntity> _userArticleRepository;
     private readonly IBaseRepository<ArticleCategoryEntity> _articleCategoryRepository;
 
     public ArticleService(ILogger<ArticleService> logger,
         IJwtTokenService jwtTokenService,
         IBaseRepository<UserEntity> userRepository,
+        IBaseRepository<CommentEntity> commentRepository,
         IBaseRepository<ArticleEntity> articleRepository,
         IBaseRepository<CategoryEntity> categoryRepository,
+        IBaseRepository<UserCommentEntity> userCommentRepository,
         IBaseRepository<UserArticleEntity> userArticleRepository,
         IBaseRepository<ArticleCategoryEntity> articleCategoryRepository)
     {
         _logger = logger;
         _jwtTokenService = jwtTokenService;
         _userRepository = userRepository;
+        _commentRepository = commentRepository;
         _articleRepository = articleRepository;
         _categoryRepository = categoryRepository;
+        _userCommentRepository = userCommentRepository;
         _userArticleRepository = userArticleRepository;
         _articleCategoryRepository = articleCategoryRepository;
     }
 
     public async Task<IBaseResponse<ArticleEntity>> CreateNewArticleAsync(ArticleCreateDto articleDto, string token)
     {
-        var userId = _jwtTokenService.GetUserIdFromToken(token);
-        var category = await _categoryRepository.GetAll()
-            .Where(find => find.CategoryName == articleDto.Category)
-            .FirstOrDefaultAsync();
-        var title = await _articleRepository.GetAll()
-            .Where(find => find.Title == articleDto.Title)
-            .FirstOrDefaultAsync();
-        
         try
         {
+            var userId = _jwtTokenService.GetUserIdFromToken(token);
+            var category = await _categoryRepository.GetAll()
+                .Where(find => find.CategoryName == articleDto.Category)
+                .FirstOrDefaultAsync();
+            var title = await _articleRepository.GetAll()
+                .Where(find => find.Title == articleDto.Title)
+                .FirstOrDefaultAsync();
+            
             if (!userId.HasValue)
             {
-                _logger.LogError("User is not authorized to update this article");
-                return new BaseResponse<ArticleEntity>().ServerResponse("User is not authorized to update this article", StatusCode.Unauthorized);
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<ArticleEntity>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
             }
             
             if (category == null!)
@@ -287,8 +293,8 @@ public class ArticleService : IArticleService
 
             if (!userId.HasValue)
             {
-                _logger.LogError("User is not authorized to update this article!");
-                return new BaseResponse<ArticleEntity>().ServerResponse("User is not authorized to update this article!", StatusCode.Unauthorized);
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<ArticleEntity>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
             }
             
             if (article == null!)
@@ -330,46 +336,33 @@ public class ArticleService : IArticleService
         try
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
-            var article = await _articleRepository.GetAll()
-                .Where(find => find.ArticleId == articleId && find.UserArticle.Any(articleUser => articleUser.UserId == userId))
-                .FirstOrDefaultAsync();
-
-            var userArticle = await _userArticleRepository.GetAll()
-                .Where(find => find.Article == article)
-                .FirstOrDefaultAsync();
-
-            var articleCategory = await _articleCategoryRepository.GetAll()
-                .Where(find => find.Article == article)
-                .FirstOrDefaultAsync();
-            
             
             if (!userId.HasValue)
             {
-                _logger.LogError("User is not authorized to update this article");
-                return new BaseResponse<ArticleEntity>().ServerResponse("User is not authorized to update this article!", StatusCode.Unauthorized);
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<ArticleEntity>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
             }
             
+            var article = await _articleRepository.GetAll()
+                .Where(find => find.ArticleId == articleId && find.UserArticle.Any(articleUser => articleUser.UserId == userId.Value))
+                .FirstOrDefaultAsync();
+            var comments = await _commentRepository.GetAll()
+                .Where(find => find.ArticleComment.Any(commentsArticle => commentsArticle.ArticleId == articleId))
+                .FirstOrDefaultAsync();
+
             if (article == null!)
             {
                 _logger.LogError("Article not found!");
                 return new BaseResponse<ArticleEntity>().ServerResponse("Article not found!", StatusCode.NotFound);
             }
 
-            if (userArticle == null)
+            if (comments != null)
             {
-                _logger.LogError("No links found between users and articles!");
-                return new BaseResponse<ArticleEntity>().ServerResponse("No links found between users and articles!", StatusCode.NotFound);
+                await _commentRepository.DeleteAsync(comments);
             }
-
-            if (articleCategory == null)
-            {
-                _logger.LogError("No links found between articles and categories!");
-                return new BaseResponse<ArticleEntity>().ServerResponse("No links found between articles and categories!", StatusCode.NotFound);
-            }
+            
 
             await _articleRepository.DeleteAsync(article);
-            await _userArticleRepository.DeleteAsync(userArticle);
-            await _articleCategoryRepository.DeleteAsync(articleCategory);
 
             return new BaseResponse<ArticleEntity>().ServerResponse("Task deleted successfully!", StatusCode.NoContent);
         }

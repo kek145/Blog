@@ -81,8 +81,8 @@ public class CommentService : ICommentService
 
             if (!userId.HasValue)
             {
-                _logger.LogError("User is not authorized to delete this article");
-                return new BaseResponse<CommentDto>().ServerResponse("User is not authorized to delete this comment", StatusCode.Unauthorized);
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<CommentDto>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
             }
             
             if (article == null!)
@@ -117,8 +117,8 @@ public class CommentService : ICommentService
                 .FirstOrDefaultAsync();
             if (!userId.HasValue)
             {
-                _logger.LogError("User is not authorized to update this article");
-                return new BaseResponse<CommentAddDto>().ServerResponse("User is not authorized to added this comment", StatusCode.Unauthorized);
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<CommentAddDto>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
             }
 
             if (article == null!)
@@ -174,8 +174,8 @@ public class CommentService : ICommentService
 
             if (!userId.HasValue)
             {
-                _logger.LogError("");
-                return new BaseResponse<CommentUpdateDto>().ServerResponse("User is not authorized to update this comment", StatusCode.Unauthorized);
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<CommentUpdateDto>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
             }
             
             if (article == null!)

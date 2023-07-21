@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.BL.AccountService;
 using BlogAPI.BL.ArticleService;
+using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.BL.DTOs.AuthenticationDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,13 +28,12 @@ public class AccountController : ControllerBase
     {
         var response = await _articleService.GetAllArticlesByUserAsync(userId);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { response.Description });
-
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { response.Description });
-        
-        return Ok(new { response.Data });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => BadRequest(new { response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { response.Description }),
+            _ => Ok(new { response.Data })
+        };
     }
 
     [HttpPut]
@@ -44,16 +43,14 @@ public class AccountController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _accountService.UpdateUserInfoAsync(request, token);
-        
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-
-
-        return Ok(new { response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => Ok(new { response.Description })
+        };
     }
     
     [HttpPut]
@@ -63,14 +60,15 @@ public class AccountController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _accountService.UpdateAuthenticationInfoAsync(request, token);
-        
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
 
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-        
-        return Ok(new { response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => BadRequest(new { error = response.Description }),
+            Domain.Enum.StatusCode.Conflict => Conflict(new { error = response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => Ok(new { response.Description })
+        };
     }
 
     [HttpDelete]
@@ -80,13 +78,13 @@ public class AccountController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _accountService.DeleteUserAccountAsync(token);
-        
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
 
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = response.Description });
-        
-        return Ok(new { response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => BadRequest(new { error = response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => NoContent()
+        };
     }
 }

@@ -36,7 +36,7 @@ public class ArticleController : ControllerBase
             Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
             Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
             Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
-            _ => StatusCode(201, new { response.Data })
+            _ => StatusCode(201, new { response.Description })
         };
     }
 
@@ -158,10 +158,10 @@ public class ArticleController : ControllerBase
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.DeleteArticleAsync(token, articleId);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { response.Description });
+        if (response.StatusCode == Domain.Enum.StatusCode.NotFound)
+            return NotFound(new { response.Description });
         
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : NoContent();
     }
 
     [HttpDelete]

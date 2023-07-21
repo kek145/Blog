@@ -123,12 +123,14 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserCommentEntity>()
             .HasOne(uc => uc.User)
             .WithMany(uc => uc.UserComment)
-            .HasForeignKey(uc => uc.UserId);
+            .HasForeignKey(uc => uc.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<UserCommentEntity>()
             .HasOne(uc => uc.Comment)
             .WithMany(uc => uc.UserComment)
-            .HasForeignKey(uc => uc.CommentId);
+            .HasForeignKey(uc => uc.CommentId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasKey(ac => new { ac.ArticleId, ac.CommentId });
@@ -136,12 +138,14 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasOne(ac => ac.Comment)
             .WithMany(ac => ac.ArticleComment)
-            .HasForeignKey(ac => ac.CommentId);
+            .HasForeignKey(ac => ac.CommentId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCommentEntity>()
             .HasOne(ac => ac.Article)
             .WithMany(ac => ac.ArticleComment)
-            .HasForeignKey(ac => ac.ArticleId);
+            .HasForeignKey(ac => ac.ArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasKey(ac => new { ac.ArticleId, ac.CategoryId });
@@ -149,11 +153,13 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasOne(ac => ac.Article)
             .WithMany(ac => ac.ArticleCategory)
-            .HasForeignKey(ac => ac.ArticleId);
+            .HasForeignKey(ac => ac.ArticleId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         modelBuilder.Entity<ArticleCategoryEntity>()
             .HasOne(ac => ac.Category)
             .WithMany(ac => ac.ArticleCategory)
-            .HasForeignKey(ac => ac.CategoryId);
+            .HasForeignKey(ac => ac.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

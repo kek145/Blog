@@ -19,12 +19,20 @@ public class AccountService : IAccountService
     private readonly ILogger<AccountService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IBaseRepository<CommentEntity> _commentRepository;
+    private readonly IBaseRepository<ArticleEntity> _articleRepository;
 
-    public AccountService(ILogger<AccountService> logger, IJwtTokenService jwtTokenService, IBaseRepository<UserEntity> userRepository)
+    public AccountService(ILogger<AccountService> logger,
+        IJwtTokenService jwtTokenService,
+        IBaseRepository<UserEntity> userRepository, 
+        IBaseRepository<CommentEntity> commentRepository,
+        IBaseRepository<ArticleEntity> articleRepository)
     {
         _logger = logger;
         _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
+        _commentRepository = commentRepository;
+        _articleRepository = articleRepository;
     }
 
 
@@ -34,19 +42,41 @@ public class AccountService : IAccountService
         {
             var userId = _jwtTokenService.GetUserIdFromToken(token);
             if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized");
+            {
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<UserEntity>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
+            }
+            
             var user = await _userRepository.GetAll()
                 .Where(find => find.UserId == userId.Value)
+                .FirstOrDefaultAsync();
+            
+            var comments = await _commentRepository.GetAll()
+                .Where(find => find.UserComment.Any(commentsArticle => commentsArticle.UserId == userId.Value))
+                .FirstOrDefaultAsync();
+
+            var articles = await _articleRepository.GetAll()
+                .Where(find => find.UserArticle.Any(userArticle => userArticle.UserId == userId.Value))
                 .FirstOrDefaultAsync();
 
             if (user == null!)
             {
                 _logger.LogError("User is not found!");
-                return new BaseResponse<UserEntity>().ServerResponse("User is not found!", StatusCode.BadRequest);
+                return new BaseResponse<UserEntity>().ServerResponse("User is not found!", StatusCode.NotFound);
+            }
+
+            if (comments != null)
+            {
+                await _commentRepository.DeleteAsync(comments);
+            }
+
+            if (articles != null)
+            {
+                await _articleRepository.DeleteAsync(articles);
             }
             
             await _userRepository.DeleteAsync(user);
-            return new BaseResponse<UserEntity>().ServerResponse("Account successfully deleted!", StatusCode.Ok);
+            return new BaseResponse<UserEntity>().ServerResponse("Account successfully deleted!", StatusCode.NoContent);
         }
         catch (Exception ex)
         {
@@ -62,7 +92,10 @@ public class AccountService : IAccountService
             var userId = _jwtTokenService.GetUserIdFromToken(token);
             
             if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            {
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<UpdateUserDto>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
+            }
             
             var user = await _userRepository.GetAll()
                 .Where(find => find.UserId == userId.Value)
@@ -71,7 +104,7 @@ public class AccountService : IAccountService
             if (user == null!)
             {
                 _logger.LogError("User is not found!");
-                return new BaseResponse<UpdateUserDto>().ServerResponse("User is not found!", StatusCode.BadRequest);
+                return new BaseResponse<UpdateUserDto>().ServerResponse("User is not found!", StatusCode.NotFound);
             }
 
             user.FirstName = updateDto.FirstName;
@@ -96,7 +129,10 @@ public class AccountService : IAccountService
             var userId = _jwtTokenService.GetUserIdFromToken(token);
 
             if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized to update this article!");
+            {
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
+            }
             
             var user = await _userRepository.GetAll()
                 .Where(find => find.UserId == userId.Value)
@@ -105,13 +141,13 @@ public class AccountService : IAccountService
             if (user == null!)
             {
                 _logger.LogError("User is not found!");
-                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("User is not found!", StatusCode.BadRequest);
+                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("User is not found!", StatusCode.NotFound);
             }
 
             if (updateDto.Password != updateDto.ConfirmPassword)
             {
                 _logger.LogError("Password mismatch!");
-                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("Password mismatch!", StatusCode.BadRequest);
+                return new BaseResponse<UpdateAuthenticationDto>().ServerResponse("Password mismatch!", StatusCode.Conflict);
             }
             
             PasswordHasher.CreatePasswordHash(updateDto.Password, out byte[] passwordHash, out byte[] passwordSalt);

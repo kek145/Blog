@@ -47,6 +47,7 @@ public class AuthenticationService : IAuthenticationService
                 .FirstOrDefaultAsync();
             var role = await _userRoleRepository.GetAll()
                 .Where(find => find.UserId == user!.UserId)
+                .Select(ur => ur.Role.RoleName)
                 .FirstOrDefaultAsync();
         
 
@@ -62,7 +63,7 @@ public class AuthenticationService : IAuthenticationService
                 return new BaseResponse<string>().ServerResponse("Invalid email or password!", StatusCode.Unauthorized);
             }
         
-            var token = GenerateJwtToken(user, role.Role.RoleName);
+            var token = GenerateJwtToken(user, role);
             return new BaseResponse<string>
             {
                 Data = token,
