@@ -30,10 +30,14 @@ public class ArticleController : ControllerBase
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.CreateNewArticleAsync(request, token);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { response.Description });
-
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { response.Description }) : Ok(new { response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.Conflict => Conflict(new { response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => StatusCode(201, new { response.Data })
+        };
     }
 
     [HttpPost]
@@ -43,11 +47,13 @@ public class ArticleController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _commentService.AddCommentAsync(request, token, articleId);
-        
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { response.Description });
 
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { response.Description }) : Ok(new { response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { response.Description }),
+            _ => StatusCode(201, new { response.Description })
+        };
     }
 
     [HttpGet]
@@ -55,10 +61,7 @@ public class ArticleController : ControllerBase
     public async Task<IActionResult> GetAllArticles()
     {
         var response = await _articleService.GetAllArticlesAsync();
-        if (response == null!)
-            return BadRequest(new { error = "Article is not found!"});
-
-        return Ok(new { response.Data });
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = "Article is not found!"}) : Ok(new { response.Data });
     }
 
     [HttpGet]
@@ -75,10 +78,12 @@ public class ArticleController : ControllerBase
     {
         var response = await _articleService.GetArticleByIdAsync(articleId);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-
-        return Ok(new { response.Data });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => Ok(new { response.Data })
+        };
     }
     
     [HttpGet]
@@ -87,10 +92,12 @@ public class ArticleController : ControllerBase
     {
         var response = await _articleService.GetAllArticlesByCategoryAsync(category);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-        
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Data });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => Ok(new { response.Data })
+        };
     }
 
     [HttpGet]
@@ -98,8 +105,13 @@ public class ArticleController : ControllerBase
     public async Task<IActionResult> GetAllComments(int articleId)
     {
         var response = await _commentService.GetAllCommentsByArticleAsync(articleId);
-        
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Data });
+
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { response.Description }),
+            _ => Ok(new { response.Data })
+        };
     }
 
     [HttpPut]
@@ -110,10 +122,14 @@ public class ArticleController : ControllerBase
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _articleService.UpdateArticleAsync(request, token, articleId);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-        
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.Conflict => Conflict(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { response.Description }),
+            _ => Ok(new { response.Data })
+        };
     }
 
     [HttpPut]
@@ -123,11 +139,14 @@ public class ArticleController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _commentService.UpdateCommentAsync(request, token, articleId, commentId);
-        
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-        
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
+
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => Ok(new { response.Description })
+        };
     }
 
 
@@ -152,10 +171,13 @@ public class ArticleController : ControllerBase
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var response = await _commentService.DeleteCommentAsync(token, articleId, commentId);
-        
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { response.Description });
-        
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Description });
+
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { response.Description }),
+            Domain.Enum.StatusCode.Unauthorized => Unauthorized(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => NoContent()
+        };
     }
 }

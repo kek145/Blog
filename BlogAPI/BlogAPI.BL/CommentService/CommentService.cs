@@ -78,24 +78,27 @@ public class CommentService : ICommentService
                 .Where(c => c.CommentId == commentId && c.ArticleComment
                     .Any(articleComments => articleComments.ArticleId == articleId))
                 .FirstOrDefaultAsync();
-            
+
             if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            {
+                _logger.LogError("User is not authorized to delete this article");
+                return new BaseResponse<CommentDto>().ServerResponse("User is not authorized to delete this comment", StatusCode.Unauthorized);
+            }
             
             if (article == null!)
             {
                 _logger.LogError("Article is not found!");
-                return new BaseResponse<CommentDto>().ServerResponse("Article is not found", StatusCode.BadRequest);
+                return new BaseResponse<CommentDto>().ServerResponse("Article is not found", StatusCode.NotFound);
             }
 
             if (comment == null!)
             {
                 _logger.LogError("Comment is not found!");
-                return new BaseResponse<CommentDto>().ServerResponse("Comment is not found", StatusCode.BadRequest);
+                return new BaseResponse<CommentDto>().ServerResponse("Comment is not found", StatusCode.NotFound);
             }
 
             await _commentRepository.DeleteAsync(comment);
-            return new BaseResponse<CommentDto>().ServerResponse("Comment successfully deleted!", StatusCode.Ok);
+            return new BaseResponse<CommentDto>().ServerResponse("Comment successfully deleted!", StatusCode.NoContent);
         }
         catch (Exception ex)
         {
@@ -113,12 +116,15 @@ public class CommentService : ICommentService
                 .Where(find => find.ArticleId == articleId)
                 .FirstOrDefaultAsync();
             if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            {
+                _logger.LogError("User is not authorized to update this article");
+                return new BaseResponse<CommentAddDto>().ServerResponse("User is not authorized to added this comment", StatusCode.Unauthorized);
+            }
 
             if (article == null!)
             {
                 _logger.LogError("Article is not found!");
-                return new BaseResponse<CommentAddDto>().ServerResponse("Article is not found", StatusCode.BadRequest);
+                return new BaseResponse<CommentAddDto>().ServerResponse("Article is not found", StatusCode.NotFound);
             }
 
             var comment = new CommentEntity
@@ -144,7 +150,7 @@ public class CommentService : ICommentService
             await _articleCommentRepository.AddAsync(articleComment);
 
             _logger.LogInformation("Comment delivered successfully!");
-            return new BaseResponse<CommentAddDto>().ServerResponse("Comment delivered successfully!", StatusCode.Ok);
+            return new BaseResponse<CommentAddDto>().ServerResponse("Comment delivered successfully!", StatusCode.Created);
         }
         catch (Exception ex)
         {
@@ -167,18 +173,21 @@ public class CommentService : ICommentService
                 .FirstOrDefaultAsync();
 
             if (!userId.HasValue)
-                throw new UnauthorizedAccessException("User is not authorized to update this article");
+            {
+                _logger.LogError("");
+                return new BaseResponse<CommentUpdateDto>().ServerResponse("User is not authorized to update this comment", StatusCode.Unauthorized);
+            }
             
             if (article == null!)
             {
                 _logger.LogError("Article is not found!");
-                return new BaseResponse<CommentUpdateDto>().ServerResponse("Article is not found", StatusCode.BadRequest);
+                return new BaseResponse<CommentUpdateDto>().ServerResponse("Article is not found", StatusCode.NotFound);
             }
             
             if (comment == null!)
             {
                 _logger.LogError("Comment is not found!");
-                return new BaseResponse<CommentUpdateDto>().ServerResponse("Comment is not found", StatusCode.BadRequest);
+                return new BaseResponse<CommentUpdateDto>().ServerResponse("Comment is not found", StatusCode.NotFound);
             }
 
             comment.Comment = commentDto.Comment;
