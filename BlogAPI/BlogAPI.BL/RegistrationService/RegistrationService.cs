@@ -47,19 +47,19 @@ public class RegistrationService : IRegistrationService
             if (user != null!)
             {
                 _logger.LogError("User with this email is already registered!");
-                return new BaseResponse<UserEntity>().ServerResponse("User with this email is already registered!", StatusCode.BadRequest);
+                return new BaseResponse<UserEntity>().ServerResponse("User with this email is already registered!", StatusCode.Conflict);
             }
 
             if (role == null!)
             {
                 _logger.LogError("This type of account cannot be created!");
-                return new BaseResponse<UserEntity>().ServerResponse("This type of account cannot be created!", StatusCode.BadRequest);
+                return new BaseResponse<UserEntity>().ServerResponse("This type of account cannot be created!", StatusCode.NotFound);
             }
 
             if (registrationDto.Password != registrationDto.ConfirmPassword)
             {
                 _logger.LogError("Password mismatch!");
-                return new BaseResponse<UserEntity>().ServerResponse("Password mismatch!", StatusCode.BadRequest);
+                return new BaseResponse<UserEntity>().ServerResponse("Password mismatch!", StatusCode.Conflict);
             }
 
             PasswordHasher.CreatePasswordHash(registrationDto.Password, out var passwordHash, out var passwordSalt);
@@ -82,7 +82,7 @@ public class RegistrationService : IRegistrationService
             await _userRoleRepository.AddAsync(userRoleEntity);
             
             _logger.LogInformation("Registration completed successfully!");
-            return new BaseResponse<UserEntity>().ServerResponse("Registration completed successfully!", StatusCode.Ok);
+            return new BaseResponse<UserEntity>().ServerResponse("Registration completed successfully!", StatusCode.Created);
         }
         catch (Exception)
         {

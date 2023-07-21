@@ -22,12 +22,12 @@ public class RegistrationController : ControllerBase
     {
         var response = await _registrationService.RegistrationServiceAsync(request);
 
-        if (response.StatusCode == Domain.Enum.StatusCode.BadRequest)
-            return BadRequest(new { error = response.Description });
-
-        if (response.StatusCode == Domain.Enum.StatusCode.InternalServerError)
-            return StatusCode(500, new { error = "Internal Server error" });
-
-        return Ok(new { success = response.Description });
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.NotFound => NotFound(new { error = response.Description }),
+            Domain.Enum.StatusCode.Conflict => Conflict(new { error = response.Description }),
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { error = response.Description }),
+            _ => StatusCode(201, new { success = response.Description })
+        };
     }
 }
