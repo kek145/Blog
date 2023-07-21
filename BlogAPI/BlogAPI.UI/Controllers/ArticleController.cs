@@ -141,7 +141,7 @@ public class ArticleController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("Article/{articleId:int}/Comment/{commentId}")]
+    [Route("Article/{articleId:int}/Comment/{commentId:int}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
     public async Task<IActionResult> DeleteComment()
     {
