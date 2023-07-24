@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BlogAPI.DAL.Interfaces;
 
-public interface IBaseRepository<T>
+public interface IBaseRepository<T> where T : class
 {
     Task AddAsync(T entity);
     IQueryable<T> GetAll();

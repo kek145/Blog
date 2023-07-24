@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class CommentRepository : IBaseRepository<CommentEntity>, ICommentRepository
+public class CommentRepository : IBaseRepository<CommentEntity>, IGenericRepository<CommentEntity>
 {
     private readonly ApplicationDbContext _context;
 

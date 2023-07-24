@@ -18,29 +18,29 @@ public class ArticleService : IArticleService
 {
     private readonly ILogger<ArticleService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly ICommentRepository _commentRepository;
     private readonly IBaseRepository<UserEntity> _userRepository;
     private readonly IBaseRepository<ArticleEntity> _articleRepository;
     private readonly IBaseRepository<CategoryEntity> _categoryRepository;
+    private readonly IGenericRepository<CommentEntity> _commentRepository;
     private readonly IBaseRepository<UserArticleEntity> _userArticleRepository;
     private readonly IBaseRepository<ArticleCategoryEntity> _articleCategoryRepository;
 
     public ArticleService(
         ILogger<ArticleService> logger,
         IJwtTokenService jwtTokenService,
-        ICommentRepository commentRepository,
         IBaseRepository<UserEntity> userRepository,
         IBaseRepository<ArticleEntity> articleRepository,
         IBaseRepository<CategoryEntity> categoryRepository,
+        IGenericRepository<CommentEntity> commentRepository,
         IBaseRepository<UserArticleEntity> userArticleRepository,
         IBaseRepository<ArticleCategoryEntity> articleCategoryRepository)
     {
         _logger = logger;
-        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
-        _commentRepository = commentRepository;
+        _userRepository = userRepository;
         _articleRepository = articleRepository;
         _categoryRepository = categoryRepository;
+        _commentRepository = commentRepository;
         _userArticleRepository = userArticleRepository;
         _articleCategoryRepository = articleCategoryRepository;
     }

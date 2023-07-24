@@ -4,6 +4,7 @@ using BlogAPI.Domain.Enum;
 using BlogAPI.DAL.Interfaces;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
+using BlogAPI.DAL.Repositories;
 using BlogAPI.BL.JwtTokenService;
 using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.Domain.Entity.Table;
@@ -18,15 +19,15 @@ public class AccountService : IAccountService
 {
     private readonly ILogger<AccountService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IArticleRepository _articleRepository;
-    private readonly ICommentRepository _commentRepository;
+    private readonly IGenericRepository<ArticleEntity> _articleRepository;
+    private readonly IGenericRepository<CommentRepository> _commentRepository;
     private readonly IBaseRepository<UserEntity> _userRepository;
 
     public AccountService(
         ILogger<AccountService> logger,
         IJwtTokenService jwtTokenService,
-        IArticleRepository articleRepository,
-        ICommentRepository commentRepository,
+        IGenericRepository<ArticleEntity> articleRepository,
+        IGenericRepository<CommentRepository> commentRepository,
         IBaseRepository<UserEntity> userRepository)
     {
         _logger = logger;

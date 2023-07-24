@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class ArticleRepository : IBaseRepository<ArticleEntity>, IArticleRepository
+public class ArticleRepository : IBaseRepository<ArticleEntity>, IGenericRepository<ArticleEntity>
 {
     private readonly ApplicationDbContext _context;
 
