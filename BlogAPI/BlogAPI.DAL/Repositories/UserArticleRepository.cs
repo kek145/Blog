@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BlogAPI.DAL.Core;
 using System.Threading.Tasks;
 using BlogAPI.DAL.Interfaces;
@@ -32,6 +33,16 @@ public class UserArticleRepository : IBaseRepository<UserArticleEntity>
         await _context.SaveChangesAsync();
 
         return entity;
+    }
+
+    public Task<List<UserArticleEntity>> GetAllById(int entityId)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<List<UserArticleEntity>> DeleteAllAsync(IEnumerable<UserArticleEntity> entity)
+    {
+        throw new System.NotImplementedException();
     }
 
     public async Task DeleteAsync(UserArticleEntity entity)

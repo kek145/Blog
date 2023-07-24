@@ -18,31 +18,29 @@ public class ArticleService : IArticleService
 {
     private readonly ILogger<ArticleService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly ICommentRepository _commentRepository;
     private readonly IBaseRepository<UserEntity> _userRepository;
-    private readonly IBaseRepository<CommentEntity> _commentRepository;
     private readonly IBaseRepository<ArticleEntity> _articleRepository;
     private readonly IBaseRepository<CategoryEntity> _categoryRepository;
-    private readonly IBaseRepository<UserCommentEntity> _userCommentRepository;
     private readonly IBaseRepository<UserArticleEntity> _userArticleRepository;
     private readonly IBaseRepository<ArticleCategoryEntity> _articleCategoryRepository;
 
-    public ArticleService(ILogger<ArticleService> logger,
+    public ArticleService(
+        ILogger<ArticleService> logger,
         IJwtTokenService jwtTokenService,
+        ICommentRepository commentRepository,
         IBaseRepository<UserEntity> userRepository,
-        IBaseRepository<CommentEntity> commentRepository,
         IBaseRepository<ArticleEntity> articleRepository,
         IBaseRepository<CategoryEntity> categoryRepository,
-        IBaseRepository<UserCommentEntity> userCommentRepository,
         IBaseRepository<UserArticleEntity> userArticleRepository,
         IBaseRepository<ArticleCategoryEntity> articleCategoryRepository)
     {
         _logger = logger;
-        _jwtTokenService = jwtTokenService;
         _userRepository = userRepository;
+        _jwtTokenService = jwtTokenService;
         _commentRepository = commentRepository;
         _articleRepository = articleRepository;
         _categoryRepository = categoryRepository;
-        _userCommentRepository = userCommentRepository;
         _userArticleRepository = userArticleRepository;
         _articleCategoryRepository = articleCategoryRepository;
     }
@@ -81,7 +79,7 @@ public class ArticleService : IArticleService
             {
                 Title = articleDto.Title,
                 Content = articleDto.Content,
-                CreatedAt = articleDto.CreatedAt
+                CreatedAt = DateTime.UtcNow
             };
 
             var userArticle = new UserArticleEntity
@@ -142,7 +140,7 @@ public class ArticleService : IArticleService
         try
         {
             var user = await _userRepository.GetAll()
-                .Where(find => find.UserId == userId)
+                .Where(find => find.UserId == userId && find.UserRole.Any(userRole => userRole.Role.RoleName == "Author"))
                 .FirstOrDefaultAsync();
 
             if (user == null)
@@ -311,7 +309,7 @@ public class ArticleService : IArticleService
 
             article.Title = articleDto.Title;
             article.Content = articleDto.Content;
-            article.UpdatedAt = articleDto.UpdatedAt;
+            article.UpdatedAt = DateTime.UtcNow;
             
 
             await _articleRepository.UpdateAsync(article);
@@ -346,19 +344,18 @@ public class ArticleService : IArticleService
             var article = await _articleRepository.GetAll()
                 .Where(find => find.ArticleId == articleId && find.UserArticle.Any(articleUser => articleUser.UserId == userId.Value))
                 .FirstOrDefaultAsync();
-            var comments = await _commentRepository.GetAll()
-                .Where(find => find.ArticleComment.Any(commentsArticle => commentsArticle.ArticleId == articleId))
-                .FirstOrDefaultAsync();
 
             if (article == null!)
             {
                 _logger.LogError("Article not found!");
                 return new BaseResponse<ArticleEntity>().ServerResponse("Article not found!", StatusCode.NotFound);
             }
+            
+            var comments = await _commentRepository.GetAllById(article.ArticleId);
 
-            if (comments != null)
+            if (comments != null!)
             {
-                await _commentRepository.DeleteAsync(comments);
+                await _commentRepository.DeleteAllAsync(comments);
             }
             
 

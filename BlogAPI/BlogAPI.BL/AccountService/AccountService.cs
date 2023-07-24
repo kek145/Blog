@@ -18,23 +18,23 @@ public class AccountService : IAccountService
 {
     private readonly ILogger<AccountService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IArticleRepository _articleRepository;
+    private readonly ICommentRepository _commentRepository;
     private readonly IBaseRepository<UserEntity> _userRepository;
-    private readonly IBaseRepository<CommentEntity> _commentRepository;
-    private readonly IBaseRepository<ArticleEntity> _articleRepository;
 
-    public AccountService(ILogger<AccountService> logger,
+    public AccountService(
+        ILogger<AccountService> logger,
         IJwtTokenService jwtTokenService,
-        IBaseRepository<UserEntity> userRepository, 
-        IBaseRepository<CommentEntity> commentRepository,
-        IBaseRepository<ArticleEntity> articleRepository)
+        IArticleRepository articleRepository,
+        ICommentRepository commentRepository,
+        IBaseRepository<UserEntity> userRepository)
     {
         _logger = logger;
         _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
-        _commentRepository = commentRepository;
         _articleRepository = articleRepository;
+        _commentRepository = commentRepository;
     }
-
 
     public async Task<IBaseResponse<UserEntity>> DeleteUserAccountAsync(string token)
     {
@@ -50,33 +50,31 @@ public class AccountService : IAccountService
             var user = await _userRepository.GetAll()
                 .Where(find => find.UserId == userId.Value)
                 .FirstOrDefaultAsync();
-            
-            var comments = await _commentRepository.GetAll()
-                .Where(find => find.UserComment.Any(commentsArticle => commentsArticle.UserId == userId.Value))
-                .FirstOrDefaultAsync();
 
-            var articles = await _articleRepository.GetAll()
-                .Where(find => find.UserArticle.Any(userArticle => userArticle.UserId == userId.Value))
-                .FirstOrDefaultAsync();
-
-            if (user == null!)
+            if (user == null)
             {
                 _logger.LogError("User is not found!");
                 return new BaseResponse<UserEntity>().ServerResponse("User is not found!", StatusCode.NotFound);
             }
 
-            if (comments != null)
+            var comments = await _commentRepository.GetAllByUserId(user.UserId);
+
+            if (comments != null!)
             {
-                await _commentRepository.DeleteAsync(comments);
+                await _commentRepository.DeleteAllAsync(comments);
             }
 
-            if (articles != null)
+            var articles = await _articleRepository.GetAllByUserId(user.UserId);
+
+            if (articles != null!)
             {
-                await _articleRepository.DeleteAsync(articles);
+                await _articleRepository.DeleteAllAsync(articles);
             }
-            
+
             await _userRepository.DeleteAsync(user);
+            _logger.LogInformation("Account successfully deleted!");
             return new BaseResponse<UserEntity>().ServerResponse("Account successfully deleted!", StatusCode.NoContent);
+
         }
         catch (Exception ex)
         {

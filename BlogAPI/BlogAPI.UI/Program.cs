@@ -46,6 +46,8 @@ builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IBaseRepository<UserEntity>, UserRepository>();
 builder.Services.AddScoped<IBaseRepository<RoleEntity>, RoleRepository>();

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using Azure;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.BL.DTOs.AuthenticationDto;
 using BlogAPI.DAL.Interfaces;
@@ -64,6 +65,7 @@ public class AuthenticationService : IAuthenticationService
             }
         
             var token = GenerateJwtToken(user, role);
+
             return new BaseResponse<string>
             {
                 Data = token,
