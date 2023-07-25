@@ -46,20 +46,20 @@ builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IGenericRepository<CommentEntity>, CommentRepository>();
-builder.Services.AddScoped<IGenericRepository<ArticleEntity>, ArticleRepository>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
-builder.Services.AddScoped<IBaseRepository<UserEntity>, UserRepository>();
-builder.Services.AddScoped<IBaseRepository<RoleEntity>, RoleRepository>();
+builder.Services.AddScoped<IGenericRepository<UserEntity>, UserRepository>();
+builder.Services.AddScoped<IGenericRepository<RoleEntity>, RoleRepository>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IBaseRepository<ArticleEntity>, ArticleRepository>();
-builder.Services.AddScoped<IBaseRepository<CommentEntity>, CommentRepository>();
-builder.Services.AddScoped<IBaseRepository<CategoryEntity>, CategoryRepository>();
-builder.Services.AddScoped<IBaseRepository<UserRoleEntity>, UserRoleRepository>();
-builder.Services.AddScoped<IBaseRepository<UserArticleEntity>, UserArticleRepository>();
-builder.Services.AddScoped<IBaseRepository<UserCommentEntity>, UserCommentRepository>();
-builder.Services.AddScoped<IBaseRepository<ArticleCommentEntity>, ArticleCommentRepository>();
-builder.Services.AddScoped<IBaseRepository<ArticleCategoryEntity>, ArticleCategoryRepository>();
+builder.Services.AddScoped<IGenericRepository<ArticleEntity>, ArticleRepository>();
+builder.Services.AddScoped<IGenericRepository<CommentEntity>, CommentRepository>();
+builder.Services.AddScoped<IGenericRepository<CategoryEntity>, CategoryRepository>();
+builder.Services.AddScoped<IGenericRepository<UserRoleEntity>, UserRoleRepository>();
+builder.Services.AddScoped<IQueryAndDeleteRepository<CommentEntity>, CommentRepository>();
+builder.Services.AddScoped<IQueryAndDeleteRepository<ArticleEntity>, ArticleRepository>();
+builder.Services.AddScoped<IRelationShipRepository<UserArticleEntity>, UserArticleRepository>();
+builder.Services.AddScoped<IRelationShipRepository<UserCommentEntity>, UserCommentRepository>();
+builder.Services.AddScoped<IRelationShipRepository<ArticleCommentEntity>, ArticleCommentRepository>();
+builder.Services.AddScoped<IRelationShipRepository<ArticleCategoryEntity>, ArticleCategoryRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

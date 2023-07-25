@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using BlogAPI.DAL.Core;
 using System.Threading.Tasks;
 using BlogAPI.DAL.Interfaces;
+using System.Collections.Generic;
 using BlogAPI.Domain.Entity.Table;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class UserRepository : IBaseRepository<UserEntity>
+public class UserRepository : IGenericRepository<UserEntity>
 {
     private readonly ApplicationDbContext _context;
 

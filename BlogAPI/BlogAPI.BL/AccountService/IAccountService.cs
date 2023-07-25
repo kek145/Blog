@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
-using System.Collections.Generic;
 using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.Domain.Entity.Table;
 using BlogAPI.BL.DTOs.AuthenticationDto;

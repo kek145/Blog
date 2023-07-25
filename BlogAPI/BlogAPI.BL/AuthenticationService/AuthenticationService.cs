@@ -24,13 +24,13 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<AuthenticationService> _logger;
-    private readonly IBaseRepository<UserEntity> _userRepository;
-    private readonly IBaseRepository<UserRoleEntity> _userRoleRepository;
+    private readonly IGenericRepository<UserEntity> _userRepository;
+    private readonly IGenericRepository<UserRoleEntity> _userRoleRepository;
 
     public AuthenticationService(IConfiguration configuration,
         ILogger<AuthenticationService> logger,
-        IBaseRepository<UserEntity> userRepository,
-        IBaseRepository<UserRoleEntity> userRoleRepository)
+        IGenericRepository<UserEntity> userRepository,
+        IGenericRepository<UserRoleEntity> userRoleRepository)
     {
         _logger = logger;
         _configuration = configuration;

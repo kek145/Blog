@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using BlogAPI.DAL.Core;
 using System.Threading.Tasks;
 using BlogAPI.DAL.Interfaces;
+using System.Collections.Generic;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class ArticleRepository : IBaseRepository<ArticleEntity>, IGenericRepository<ArticleEntity>
+public class ArticleRepository : IGenericRepository<ArticleEntity>, IQueryAndDeleteRepository<ArticleEntity>
 {
     private readonly ApplicationDbContext _context;
 

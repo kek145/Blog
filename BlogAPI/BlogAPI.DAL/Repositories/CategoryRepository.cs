@@ -6,7 +6,7 @@ using BlogAPI.Domain.Entity.Table;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class CategoryRepository : IBaseRepository<CategoryEntity>
+public class CategoryRepository : IGenericRepository<CategoryEntity>
 {
     private readonly ApplicationDbContext _context;
 

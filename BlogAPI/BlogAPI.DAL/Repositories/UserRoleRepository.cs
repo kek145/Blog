@@ -7,7 +7,7 @@ using BlogAPI.Domain.Entity.Connection;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class UserRoleRepository : IBaseRepository<UserRoleEntity>
+public class UserRoleRepository : IGenericRepository<UserRoleEntity>
 {
     private readonly ApplicationDbContext _context;
 

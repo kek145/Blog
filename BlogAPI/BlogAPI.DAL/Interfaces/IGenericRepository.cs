@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlogAPI.DAL.Interfaces;
 
 public interface IGenericRepository<T> where T : class
 {
-    Task<List<T>> GetAllById(int commentId);
-    Task<List<T>> GetAllByUserId(int userId);
-    Task<List<T>> DeleteAllAsync(IEnumerable<T> entity);
+    Task AddAsync(T entity);
+    IQueryable<T> GetAll();
+    Task DeleteAsync(T entity);
+    Task<T> UpdateAsync(T entity);
 }

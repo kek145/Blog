@@ -16,14 +16,14 @@ namespace BlogAPI.BL.RegistrationService;
 public class RegistrationService : IRegistrationService
 {
     private readonly ILogger<RegistrationService> _logger;
-    private readonly IBaseRepository<RoleEntity> _roleRepository;
-    private readonly IBaseRepository<UserEntity> _userRepository;
-    private readonly IBaseRepository<UserRoleEntity> _userRoleRepository;
+    private readonly IGenericRepository<RoleEntity> _roleRepository;
+    private readonly IGenericRepository<UserEntity> _userRepository;
+    private readonly IGenericRepository<UserRoleEntity> _userRoleRepository;
 
     public RegistrationService(ILogger<RegistrationService> logger,
-        IBaseRepository<RoleEntity> roleRepository,
-        IBaseRepository<UserEntity> userRepository,
-        IBaseRepository<UserRoleEntity> userRoleRepository)
+        IGenericRepository<RoleEntity> roleRepository,
+        IGenericRepository<UserEntity> userRepository,
+        IGenericRepository<UserRoleEntity> userRoleRepository)
     {
         _logger = logger;
         _roleRepository = roleRepository;

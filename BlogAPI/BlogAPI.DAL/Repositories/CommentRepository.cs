@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using BlogAPI.DAL.Core;
 using System.Threading.Tasks;
 using BlogAPI.DAL.Interfaces;
+using System.Collections.Generic;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.DAL.Repositories;
 
-public class CommentRepository : IBaseRepository<CommentEntity>, IGenericRepository<CommentEntity>
+public class CommentRepository : IGenericRepository<CommentEntity>, IQueryAndDeleteRepository<CommentEntity>
 {
     private readonly ApplicationDbContext _context;
 

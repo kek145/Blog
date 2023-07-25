@@ -4,7 +4,6 @@ using BlogAPI.Domain.Enum;
 using BlogAPI.DAL.Interfaces;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
-using BlogAPI.DAL.Repositories;
 using BlogAPI.BL.JwtTokenService;
 using BlogAPI.BL.DTOs.EditUserDto;
 using BlogAPI.Domain.Entity.Table;
@@ -19,22 +18,22 @@ public class AccountService : IAccountService
 {
     private readonly ILogger<AccountService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IGenericRepository<ArticleEntity> _articleRepository;
-    private readonly IGenericRepository<CommentRepository> _commentRepository;
-    private readonly IBaseRepository<UserEntity> _userRepository;
+    private readonly IGenericRepository<UserEntity> _userRepository;
+    private readonly IQueryAndDeleteRepository<CommentEntity> _commentRepository;
+    private readonly IQueryAndDeleteRepository<ArticleEntity> _articleRepository;
 
     public AccountService(
         ILogger<AccountService> logger,
         IJwtTokenService jwtTokenService,
-        IGenericRepository<ArticleEntity> articleRepository,
-        IGenericRepository<CommentRepository> commentRepository,
-        IBaseRepository<UserEntity> userRepository)
+        IGenericRepository<UserEntity> userRepository,
+        IQueryAndDeleteRepository<CommentEntity> commentRepository,
+        IQueryAndDeleteRepository<ArticleEntity> articleRepository)
     {
         _logger = logger;
-        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
-        _articleRepository = articleRepository;
+        _userRepository = userRepository;
         _commentRepository = commentRepository;
+        _articleRepository = articleRepository;
     }
 
     public async Task<IBaseResponse<UserEntity>> DeleteUserAccountAsync(string token)

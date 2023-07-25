@@ -18,17 +18,18 @@ public class CommentService : ICommentService
 {
     private readonly ILogger<CommentService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IBaseRepository<ArticleEntity> _articleRepository;
-    private readonly IBaseRepository<CommentEntity> _commentRepository;
-    private readonly IBaseRepository<UserCommentEntity> _userCommentRepository;
-    private readonly IBaseRepository<ArticleCommentEntity> _articleCommentRepository;
+    private readonly IGenericRepository<ArticleEntity> _articleRepository;
+    private readonly IGenericRepository<CommentEntity> _commentRepository;
+    private readonly IRelationShipRepository<UserCommentEntity> _userCommentRepository;
+    private readonly IRelationShipRepository<ArticleCommentEntity> _articleCommentRepository;
 
-    public CommentService(ILogger<CommentService> logger,
+    public CommentService(
+        ILogger<CommentService> logger,
         IJwtTokenService jwtTokenService,
-        IBaseRepository<ArticleEntity> articleRepository,
-        IBaseRepository<CommentEntity> commentRepository,
-        IBaseRepository<UserCommentEntity> userCommentRepository,
-        IBaseRepository<ArticleCommentEntity> articleCommentRepository)
+        IGenericRepository<ArticleEntity> articleRepository,
+        IGenericRepository<CommentEntity> commentRepository,
+        IRelationShipRepository<UserCommentEntity> userCommentRepository,
+        IRelationShipRepository<ArticleCommentEntity> articleCommentRepository)
     {
         _logger = logger;
         _jwtTokenService = jwtTokenService;
@@ -146,8 +147,8 @@ public class CommentService : ICommentService
             };
 
             await _commentRepository.AddAsync(comment);
-            await _userCommentRepository.AddAsync(userComment);
-            await _articleCommentRepository.AddAsync(articleComment);
+            await _userCommentRepository.AddRelationShipAsync(userComment);
+            await _articleCommentRepository.AddRelationShipAsync(articleComment);
 
             _logger.LogInformation("Comment delivered successfully!");
             return new BaseResponse<CommentAddDto>().ServerResponse("Comment delivered successfully!", StatusCode.Created);

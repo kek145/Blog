@@ -18,22 +18,22 @@ public class ArticleService : IArticleService
 {
     private readonly ILogger<ArticleService> _logger;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IBaseRepository<UserEntity> _userRepository;
-    private readonly IBaseRepository<ArticleEntity> _articleRepository;
-    private readonly IBaseRepository<CategoryEntity> _categoryRepository;
-    private readonly IGenericRepository<CommentEntity> _commentRepository;
-    private readonly IBaseRepository<UserArticleEntity> _userArticleRepository;
-    private readonly IBaseRepository<ArticleCategoryEntity> _articleCategoryRepository;
+    private readonly IGenericRepository<UserEntity> _userRepository;
+    private readonly IGenericRepository<ArticleEntity> _articleRepository;
+    private readonly IGenericRepository<CategoryEntity> _categoryRepository;
+    private readonly IQueryAndDeleteRepository<CommentEntity> _commentRepository;
+    private readonly IRelationShipRepository<UserArticleEntity> _userArticleRepository;
+    private readonly IRelationShipRepository<ArticleCategoryEntity> _articleCategoryRepository;
 
     public ArticleService(
         ILogger<ArticleService> logger,
         IJwtTokenService jwtTokenService,
-        IBaseRepository<UserEntity> userRepository,
-        IBaseRepository<ArticleEntity> articleRepository,
-        IBaseRepository<CategoryEntity> categoryRepository,
-        IGenericRepository<CommentEntity> commentRepository,
-        IBaseRepository<UserArticleEntity> userArticleRepository,
-        IBaseRepository<ArticleCategoryEntity> articleCategoryRepository)
+        IGenericRepository<UserEntity> userRepository,
+        IGenericRepository<ArticleEntity> articleRepository,
+        IGenericRepository<CategoryEntity> categoryRepository,
+        IQueryAndDeleteRepository<CommentEntity> commentRepository,
+        IRelationShipRepository<UserArticleEntity> userArticleRepository,
+        IRelationShipRepository<ArticleCategoryEntity> articleCategoryRepository)
     {
         _logger = logger;
         _jwtTokenService = jwtTokenService;
@@ -95,8 +95,8 @@ public class ArticleService : IArticleService
             };
 
             await _articleRepository.AddAsync(article);
-            await _userArticleRepository.AddAsync(userArticle);
-            await _articleCategoryRepository.AddAsync(articleCategory);
+            await _userArticleRepository.AddRelationShipAsync(userArticle);
+            await _articleCategoryRepository.AddRelationShipAsync(articleCategory);
 
             _logger.LogInformation("The article has been successfully created!");
             return new BaseResponse<ArticleEntity>().ServerResponse("The article has been successfully created!", StatusCode.Created);
