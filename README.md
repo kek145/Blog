@@ -19,4 +19,4 @@ Blog FullStack Application(.NET + Angular)
   2.Docker
   
 - Cloud
-  1.AWS
+  1.Google cloud platform
