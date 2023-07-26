@@ -9,7 +9,7 @@ Blog FullStack Application(.NET + Angular)
   4.Microsoft SQL Server
   
 - Frontend
-  1.HTML/CSS
+  1.HTML/SCSS
   2.Bootstrap
   3.TypeScript
   4.Angular
