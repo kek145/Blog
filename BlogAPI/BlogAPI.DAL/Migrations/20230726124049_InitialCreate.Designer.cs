@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogAPI.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230725190900_InitialCreate")]
+    [Migration("20230726124049_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -116,7 +116,7 @@ namespace BlogAPI.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 19, 8, 59, 952, DateTimeKind.Utc).AddTicks(2323));
+                        .HasDefaultValue(new DateTime(2023, 7, 26, 12, 40, 49, 407, DateTimeKind.Utc).AddTicks(268));
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -185,7 +185,7 @@ namespace BlogAPI.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 25, 19, 8, 59, 952, DateTimeKind.Utc).AddTicks(1892));
+                        .HasDefaultValue(new DateTime(2023, 7, 26, 12, 40, 49, 406, DateTimeKind.Utc).AddTicks(9835));
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
