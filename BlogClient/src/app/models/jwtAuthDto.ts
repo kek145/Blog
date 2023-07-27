@@ -1,3 +1,3 @@
-export class JwtAuthDto {
-    token: string = '';
+export interface IJwtAuthenticationDto {
+    token: string;
 }

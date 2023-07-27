@@ -9,6 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { RegistrationComponent } from './components/registration/registration.component';
+import { ArticlesComponent } from './components/articles/articles.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { RegistrationComponent } from './components/registration/registration.co
     LoginComponent,
     AboutComponent,
     ContactComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    ArticlesComponent,
   ],
   imports: [
     FormsModule,
