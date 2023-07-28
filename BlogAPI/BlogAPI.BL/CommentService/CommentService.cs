@@ -7,7 +7,7 @@ using BlogAPI.Domain.Response;
 using System.Collections.Generic;
 using BlogAPI.BL.JwtTokenService;
 using BlogAPI.Domain.Entity.Table;
-using BlogAPI.DAL.DTOs.CommentDTOs;
+using BlogAPI.Domain.DTOs.CommentDTOs;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Domain.Entity.Connection;

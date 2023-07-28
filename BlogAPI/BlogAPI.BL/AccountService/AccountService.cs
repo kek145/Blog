@@ -5,13 +5,13 @@ using BlogAPI.DAL.Interfaces;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
-using BlogAPI.DAL.DTOs.AccountDTOs;
 using BlogAPI.Domain.Entity.Table;
-using BlogAPI.DAL.DTOs.EditUserDto;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Security.HashDataHelper;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.AccountDTOs;
+using BlogAPI.Domain.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.EditUserDto;
 
 namespace BlogAPI.BL.AccountService;
 

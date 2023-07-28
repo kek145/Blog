@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.DAL.DTOs.CommentDTOs;
+namespace BlogAPI.Domain.DTOs.CommentDTOs;
 
-public class CommentUpdateDto
+public class CommentAddDto
 {
     [Required, MinLength(10)]
     public string Comment { get; set; } = string.Empty;
-    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

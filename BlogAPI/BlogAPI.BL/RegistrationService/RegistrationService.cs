@@ -2,8 +2,8 @@
 using System.Linq;
 using BlogAPI.Domain.Enum;
 using System.Threading.Tasks;
-using BlogAPI.DAL.DTOs.RegistrationDto;
 using BlogAPI.DAL.Interfaces;
+using BlogAPI.Domain.DTOs.RegistrationDto;
 using BlogAPI.Domain.Response;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;

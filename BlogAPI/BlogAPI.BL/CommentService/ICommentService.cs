@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using System.Collections.Generic;
-using BlogAPI.DAL.DTOs.CommentDTOs;
+using BlogAPI.Domain.DTOs.CommentDTOs;
 
 namespace BlogAPI.BL.CommentService;
 

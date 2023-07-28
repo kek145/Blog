@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using System.Collections.Generic;
-using BlogAPI.DAL.DTOs.ArticleDTOs;
+using BlogAPI.Domain.DTOs.ArticleDTOs;
 using BlogAPI.Domain.Entity.Table;
 
 namespace BlogAPI.BL.ArticleService;

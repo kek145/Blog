@@ -1,4 +1,4 @@
-﻿namespace BlogAPI.DAL.DTOs.AccountDTOs;
+﻿namespace BlogAPI.Domain.DTOs.AccountDTOs;
 
 public class UserDto
 {

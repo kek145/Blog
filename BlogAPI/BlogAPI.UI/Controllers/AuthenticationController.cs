@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.AuthenticationService;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.AuthenticationDto;
 using Microsoft.AspNetCore.Http;
 
 namespace BlogAPI.UI.Controllers;

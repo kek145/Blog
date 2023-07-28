@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using BlogAPI.DAL.DTOs.AccountDTOs;
 using BlogAPI.Domain.Response;
 using BlogAPI.Domain.Entity.Table;
-using BlogAPI.DAL.DTOs.EditUserDto;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.AccountDTOs;
+using BlogAPI.Domain.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.EditUserDto;
 
 namespace BlogAPI.BL.AccountService;
 

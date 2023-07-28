@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BlogAPI.DAL.DTOs.CommentDTOs;
+namespace BlogAPI.Domain.DTOs.CommentDTOs;
 
 public class CommentDto
 {

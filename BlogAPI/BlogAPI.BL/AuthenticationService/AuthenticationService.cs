@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using BlogAPI.Security.HashDataHelper;
 using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.AuthenticationDto;
 using Microsoft.Extensions.Configuration;
 
 namespace BlogAPI.BL.AuthenticationService;

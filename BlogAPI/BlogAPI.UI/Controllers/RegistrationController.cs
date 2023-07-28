@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.RegistrationService;
-using BlogAPI.DAL.DTOs.RegistrationDto;
+using BlogAPI.Domain.DTOs.RegistrationDto;
 
 namespace BlogAPI.UI.Controllers;
 

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.AuthenticationDto;
 using BlogAPI.Domain.Response;
 
 namespace BlogAPI.BL.AuthenticationService;

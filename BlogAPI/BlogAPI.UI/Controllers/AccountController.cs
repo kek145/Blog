@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.AccountService;
 using BlogAPI.BL.ArticleService;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
-using BlogAPI.DAL.DTOs.EditUserDto;
+using BlogAPI.Domain.DTOs.AuthenticationDto;
+using BlogAPI.Domain.DTOs.EditUserDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 

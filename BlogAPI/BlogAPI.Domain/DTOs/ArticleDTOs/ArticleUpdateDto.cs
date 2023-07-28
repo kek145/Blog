@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.DAL.DTOs.ArticleDTOs;
+namespace BlogAPI.Domain.DTOs.ArticleDTOs;
 
 public class ArticleUpdateDto
 {

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.ArticleService;
 using BlogAPI.BL.CommentService;
-using BlogAPI.DAL.DTOs.ArticleDTOs;
-using BlogAPI.DAL.DTOs.CommentDTOs;
+using BlogAPI.Domain.DTOs.ArticleDTOs;
+using BlogAPI.Domain.DTOs.CommentDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -61,7 +61,7 @@ public class ArticleController : ControllerBase
     public async Task<IActionResult> GetAllArticles()
     {
         var response = await _articleService.GetAllArticlesAsync();
-        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = "Article is not found!"}) : Ok(new { response.Data });
+        return response.StatusCode == Domain.Enum.StatusCode.InternalServerError ? StatusCode(500, new { error = response.Description }) : Ok(new { response.Data });
     }
 
     [HttpGet]

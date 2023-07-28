@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BlogAPI.DAL.DTOs.RegistrationDto;
+using BlogAPI.Domain.DTOs.RegistrationDto;
 using BlogAPI.Domain.Response;
 using BlogAPI.Domain.Entity.Table;
 
