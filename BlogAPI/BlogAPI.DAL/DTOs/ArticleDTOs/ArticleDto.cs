@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BlogAPI.BL.DTOs.ArticleDTOs;
+namespace BlogAPI.DAL.DTOs.ArticleDTOs;
 
 public class ArticleDto
 {

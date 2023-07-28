@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
-using BlogAPI.BL.DTOs.EditUserDto;
+using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.DAL.DTOs.EditUserDto;
 using BlogAPI.Domain.Entity.Table;
-using BlogAPI.BL.DTOs.AuthenticationDto;
 
 namespace BlogAPI.BL.AccountService;
 

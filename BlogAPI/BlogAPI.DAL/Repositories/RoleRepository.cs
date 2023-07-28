@@ -35,16 +35,6 @@ public class RoleRepository : IGenericRepository<RoleEntity>
         return entity;
     }
 
-    public Task<List<RoleEntity>> GetAllById(int entityId)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Task<List<RoleEntity>> DeleteAllAsync(IEnumerable<RoleEntity> entity)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public async Task DeleteAsync(RoleEntity entity)
     {
         _context.Role.Remove(entity);

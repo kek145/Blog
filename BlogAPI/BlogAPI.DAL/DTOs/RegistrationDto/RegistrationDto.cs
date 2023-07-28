@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.BL.DTOs.RegistrationDto;
+namespace BlogAPI.DAL.DTOs.RegistrationDto;
 
 public class RegistrationDto
 {

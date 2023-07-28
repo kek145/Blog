@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Text;
+using System.Linq;
+using BlogAPI.Domain.Enum;
 using System.Globalization;
 using System.Security.Claims;
+using BlogAPI.DAL.Interfaces;
 using System.Threading.Tasks;
+using BlogAPI.Domain.Response;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using Azure;
 using BlogAPI.Security.HashDataHelper;
-using BlogAPI.BL.DTOs.AuthenticationDto;
-using BlogAPI.DAL.Interfaces;
 using BlogAPI.Domain.Entity.Connection;
-using BlogAPI.Domain.Enum;
-using BlogAPI.Domain.Response;
-using Microsoft.EntityFrameworkCore;
+using BlogAPI.DAL.DTOs.AuthenticationDto;
 using Microsoft.Extensions.Configuration;
 
 namespace BlogAPI.BL.AuthenticationService;

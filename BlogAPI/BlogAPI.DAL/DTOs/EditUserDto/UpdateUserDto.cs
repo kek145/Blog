@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.BL.DTOs.EditUserDto;
+namespace BlogAPI.DAL.DTOs.EditUserDto;
 
 public class UpdateUserDto
 {

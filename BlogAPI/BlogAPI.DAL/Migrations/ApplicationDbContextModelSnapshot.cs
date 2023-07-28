@@ -113,7 +113,7 @@ namespace BlogAPI.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 26, 12, 40, 49, 407, DateTimeKind.Utc).AddTicks(268));
+                        .HasDefaultValue(new DateTime(2023, 7, 27, 16, 47, 56, 534, DateTimeKind.Utc).AddTicks(4816));
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -182,7 +182,7 @@ namespace BlogAPI.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 7, 26, 12, 40, 49, 406, DateTimeKind.Utc).AddTicks(9835));
+                        .HasDefaultValue(new DateTime(2023, 7, 27, 16, 47, 56, 534, DateTimeKind.Utc).AddTicks(3902));
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

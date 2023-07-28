@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using BlogAPI.DAL.DTOs.RegistrationDto;
 using BlogAPI.Domain.Response;
 using BlogAPI.Domain.Entity.Table;
-using BlogAPI.BL.DTOs.RegistrationDto;
 
 namespace BlogAPI.BL.RegistrationService;
 

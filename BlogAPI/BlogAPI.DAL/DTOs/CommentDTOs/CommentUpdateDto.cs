@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.BL.DTOs.CommentDTOs;
+namespace BlogAPI.DAL.DTOs.CommentDTOs;
 
 public class CommentUpdateDto
 {

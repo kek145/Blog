@@ -6,7 +6,7 @@ using BlogAPI.DAL.Interfaces;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
 using System.Collections.Generic;
-using BlogAPI.BL.DTOs.ArticleDTOs;
+using BlogAPI.DAL.DTOs.ArticleDTOs;
 using BlogAPI.Domain.Entity.Table;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;

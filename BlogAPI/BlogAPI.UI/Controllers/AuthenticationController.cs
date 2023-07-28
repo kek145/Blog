@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.AuthenticationService;
-using BlogAPI.BL.DTOs.AuthenticationDto;
+using BlogAPI.DAL.DTOs.AuthenticationDto;
 using Microsoft.AspNetCore.Http;
 
 namespace BlogAPI.UI.Controllers;
@@ -25,8 +25,11 @@ public class AuthenticationController : ControllerBase
         try
         {
             var response = await _authenticationService.AuthenticationAsync(request);
+
+            if (response.Data == null)
+                return Unauthorized();
             
-            Response.Cookies.Append("jwtToken", response.Data!, new CookieOptions()
+            Response.Cookies.Append("jwtToken", response.Data, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,

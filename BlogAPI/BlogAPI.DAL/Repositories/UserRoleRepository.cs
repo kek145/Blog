@@ -2,7 +2,6 @@
 using BlogAPI.DAL.Core;
 using System.Threading.Tasks;
 using BlogAPI.DAL.Interfaces;
-using System.Collections.Generic;
 using BlogAPI.Domain.Entity.Connection;
 
 namespace BlogAPI.DAL.Repositories;
@@ -33,16 +32,6 @@ public class UserRoleRepository : IGenericRepository<UserRoleEntity>
         await _context.SaveChangesAsync();
 
         return entity;
-    }
-
-    public Task<List<UserRoleEntity>> GetAllById(int entityId)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Task<List<UserRoleEntity>> DeleteAllAsync(IEnumerable<UserRoleEntity> entity)
-    {
-        throw new System.NotImplementedException();
     }
 
     public async Task DeleteAsync(UserRoleEntity entity)

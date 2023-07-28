@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlogAPI.BL.DTOs.AuthenticationDto;
+namespace BlogAPI.DAL.DTOs.AuthenticationDto;
 
 public class AuthenticationDto
 {

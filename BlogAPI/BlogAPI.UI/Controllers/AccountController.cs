@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.AccountService;
 using BlogAPI.BL.ArticleService;
-using BlogAPI.BL.DTOs.EditUserDto;
-using BlogAPI.BL.DTOs.AuthenticationDto;
+using BlogAPI.DAL.DTOs.AuthenticationDto;
+using BlogAPI.DAL.DTOs.EditUserDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -24,13 +24,14 @@ public class AccountController : ControllerBase
 
     [HttpGet]
     [Route("GetAuthorArticles/{userId:int}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Author")]
     public async Task<IActionResult> GetAuthorArticles(int userId)
     {
         var response = await _articleService.GetAllArticlesByUserAsync(userId);
 
         return response.StatusCode switch
         {
-            Domain.Enum.StatusCode.NotFound => BadRequest(new { response.Description }),
+            Domain.Enum.StatusCode.NotFound => NotFound(new { response.Description }),
             Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { response.Description }),
             _ => Ok(new { response.Data })
         };

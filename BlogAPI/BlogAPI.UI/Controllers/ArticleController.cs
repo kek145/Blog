@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using BlogAPI.BL.ArticleService;
 using BlogAPI.BL.CommentService;
-using BlogAPI.BL.DTOs.ArticleDTOs;
-using BlogAPI.BL.DTOs.CommentDTOs;
+using BlogAPI.DAL.DTOs.ArticleDTOs;
+using BlogAPI.DAL.DTOs.CommentDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
