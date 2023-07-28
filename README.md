@@ -7,6 +7,7 @@ Blog FullStack Application(.NET + Angular)
   2.ASP.NET Core Web API
   3.Entityframework Core
   4.Microsoft SQL Server
+<<<<<<< HEAD
   
 - Frontend
   1.HTML/SCSS
@@ -23,3 +24,5 @@ Blog FullStack Application(.NET + Angular)
 - Cloud
   1.AWS
   2.GCP
+=======
+>>>>>>> 6c00fae095fdcc71ce6d0d124f645f0d1738e6e2
