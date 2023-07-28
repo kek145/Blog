@@ -1,5 +1,5 @@
 # Blog
-Blog FullStack Application(.NET + Angular)
+Blog Backend Application
 
     --------------------------------------------Technology stack---------------------------------------------
 - Backend
@@ -8,16 +8,11 @@ Blog FullStack Application(.NET + Angular)
   3.Entityframework Core
   4.Microsoft SQL Server
   
-- Frontend
-  1.HTML/SCSS
-  2.Bootstrap
-  3.TypeScript
-  4.Angular
-  
 - Tools
   1.Git
   2.GitHub
   3.Docker
   
 - Cloud
-  1.Google cloud platform
+  1.AWS
+  2.GCP
