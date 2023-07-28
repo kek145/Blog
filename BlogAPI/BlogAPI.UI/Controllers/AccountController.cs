@@ -23,8 +23,22 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
+    [Route("GetUserInfo")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, Author, User")]
+    public async Task<IActionResult> GetUserInfo()
+    {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var response = await _accountService.GetUserInfo(token);
+
+        return response.StatusCode switch
+        {
+            Domain.Enum.StatusCode.InternalServerError => StatusCode(500, new { response.Description }),
+            _ => Ok(new { response.Data })
+        };
+    }
+
+    [HttpGet]
     [Route("GetAuthorArticles/{userId:int}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Author")]
     public async Task<IActionResult> GetAuthorArticles(int userId)
     {
         var response = await _articleService.GetAllArticlesByUserAsync(userId);

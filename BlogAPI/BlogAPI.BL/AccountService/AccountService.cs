@@ -5,12 +5,13 @@ using BlogAPI.DAL.Interfaces;
 using System.Threading.Tasks;
 using BlogAPI.Domain.Response;
 using BlogAPI.BL.JwtTokenService;
-using BlogAPI.DAL.DTOs.AuthenticationDto;
-using BlogAPI.DAL.DTOs.EditUserDto;
+using BlogAPI.DAL.DTOs.AccountDTOs;
 using BlogAPI.Domain.Entity.Table;
+using BlogAPI.DAL.DTOs.EditUserDto;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Security.HashDataHelper;
+using BlogAPI.DAL.DTOs.AuthenticationDto;
 
 namespace BlogAPI.BL.AccountService;
 
@@ -34,6 +35,39 @@ public class AccountService : IAccountService
         _userRepository = userRepository;
         _commentRepository = commentRepository;
         _articleRepository = articleRepository;
+    }
+
+    public async Task<IBaseResponse<UserDto>> GetUserInfo(string token)
+    {
+        try
+        {
+            var userId = _jwtTokenService.GetUserIdFromToken(token);
+            if (!userId.HasValue)
+            {
+                _logger.LogError("User is not authorized");
+                return new BaseResponse<UserDto>().ServerResponse("User is not authorized", StatusCode.Unauthorized);
+            }
+
+            var user = await _userRepository.GetAll()
+                .Where(find => find.UserId == userId.Value)
+                .Select(find => new UserDto
+                {
+                    FirstName = find.FirstName,
+                    LastName = find.LastName
+                })
+                .FirstOrDefaultAsync();
+
+            return new BaseResponse<UserDto>
+            {
+                Data = user,
+                StatusCode = StatusCode.Ok
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Internal server error: {ExMessage}", ex.Message);
+            return new BaseResponse<UserDto>().ServerResponse("Internal server error", StatusCode.InternalServerError);
+        }
     }
 
     public async Task<IBaseResponse<UserEntity>> DeleteUserAccountAsync(string token)
