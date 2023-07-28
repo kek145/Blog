@@ -17,6 +17,9 @@ Blog FullStack Application(.NET + Angular)
 - Tools
   1.Docker
   2.Git/GitHub
+  1.Nginx
+  2.Docker
   
 - Cloud
-  1.Google cloud platform
+  1.AWS
+  2.GCP
