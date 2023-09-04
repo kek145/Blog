@@ -1,5 +1,5 @@
 # Blog
-Blog Backend Application
+Blog FullStack Application
 
     --------------------------------------------Technology stack---------------------------------------------
 - Backend
@@ -7,6 +7,13 @@ Blog Backend Application
   2.ASP.NET Core Web API
   3.Entityframework Core
   4.Microsoft SQL Server
+
+- Frontend
+  1.HTML
+  2.SCSS
+  3.MaterialUI
+  4.TypeScript
+  5.Angular
   
 - Tools
   1.Git
